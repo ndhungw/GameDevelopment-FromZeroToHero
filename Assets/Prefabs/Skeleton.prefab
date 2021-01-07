@@ -198,4 +198,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 512
-  DetectRadius: 2
+  DetectRadius: 3
+  AttackRange: 0.85
+  AttackRate: 1
+  AttackPoint: {fileID: 9631262090181634}

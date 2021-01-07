@@ -57,14 +57,14 @@ public class KnightScript : MonoBehaviour
 
         if (horizontal < 0)
         {
-            animator.SetFloat("MoveX", 0.0f);
+            transform.localScale = new Vector2(-1, 1);
             rigidbody2d.velocity = new Vector2(-speed, rigidbody2d.velocity.y);
             //transform.localScale = new Vector2(1, 1);
 
         }
         else if (horizontal > 0)
         {
-            animator.SetFloat("MoveX", 1.0f);
+            transform.localScale = new Vector2(1, 1);
             rigidbody2d.velocity = new Vector2(speed, rigidbody2d.velocity.y);
             //transform.localScale = new Vector2(-1, 1);
 

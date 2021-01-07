@@ -7,6 +7,13 @@ public class SkeletonScript : MonoBehaviour
     public LayerMask playerLayer;
 
     public float DetectRadius;
+    public float AttackRange;
+    public float AttackRate;
+
+    public Transform AttackPoint;
+
+    float nextAttackTime = 0f;
+    bool canAttack = true;
 
     Animator animator;
     Collider2D collider;
@@ -19,12 +26,21 @@ public class SkeletonScript : MonoBehaviour
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         collider = GetComponent<Collider2D>();
+        
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Time.time >= nextAttackTime)
+        {
+            canAttack = true;
+        }
+        else
+        {
+            canAttack = false;
+        }
     }
 
     void FixedUpdate()
@@ -33,23 +49,53 @@ public class SkeletonScript : MonoBehaviour
 
         if (collider != null)
         {
-            animator.SetTrigger("hit");
-
-            float lookDirection = collider.transform.position.x - gameObject.transform.position.x;
+            float distance = collider.transform.position.x - gameObject.transform.position.x;
 
             //player is on the right side
-            if (lookDirection > 0)
+            if (distance > 0)
             {
                 transform.localScale = new Vector2(1, 1);
             }
-            else if (lookDirection < 0)
+            else if (distance < 0)
             {
                 transform.localScale = new Vector2(-1, 1);
+            }
+
+            if (Mathf.Abs(distance) <= AttackRange)
+            {
+                if (canAttack)
+                {
+                    Attack();
+                    
+                }
+                
             }
         }
     }
     private void Attack()
     {
+
+        Collider2D attacked = Physics2D.OverlapCircle(AttackPoint.position, AttackRange, playerLayer);
+
+        if (attacked != null)
+        {
+            animator.SetTrigger("hit");
+            KnightScript script = attacked.GetComponent<KnightScript>();
+
+            if (script != null)
+            {
+                script.ChangeHealth(-10);
+                nextAttackTime = Time.time + 1f / AttackRate;
+            }
+        }
         
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (AttackPoint != null)
+        {
+            Gizmos.DrawWireSphere(AttackPoint.position, AttackRange);
+        }
     }
 }
