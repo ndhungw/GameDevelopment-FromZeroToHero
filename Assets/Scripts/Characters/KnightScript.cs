@@ -5,13 +5,19 @@ public class KnightScript : MonoBehaviour
     public float speed = 3.0f;
     public float jumpSpeed = 10.0f;
     public LayerMask ground;
+    public int MaxHealth = 100;
+
+    private int currentHealth = 100;
 
     Rigidbody2D rigidbody2d;
     float horizontal;
     float vertical;
     Animator animator;
-    Vector2 lookDirection;
     Collider2D collider;
+
+    public float InvincibleTime = 2.0f;
+    bool isInvincible;
+    float invincibleTimer;
 
     enum State
     {
@@ -23,6 +29,8 @@ public class KnightScript : MonoBehaviour
 
     State state = State.IDLE;
 
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,18 +38,27 @@ public class KnightScript : MonoBehaviour
         animator = GetComponent<Animator>();
         collider = GetComponent<Collider2D>();
         state = State.IDLE;
+        currentHealth = MaxHealth;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (isInvincible)
+        {
+            invincibleTimer -= Time.deltaTime;
+            if (invincibleTimer < 0)
+            {
+                isInvincible = false;
+            }
+        }
+
         horizontal = Input.GetAxis("Horizontal");
 
         if (horizontal < 0)
         {
             animator.SetFloat("MoveX", 0.0f);
             rigidbody2d.velocity = new Vector2(-speed, rigidbody2d.velocity.y);
-            Debug.Log(horizontal);
             //transform.localScale = new Vector2(1, 1);
 
         }
@@ -49,7 +66,6 @@ public class KnightScript : MonoBehaviour
         {
             animator.SetFloat("MoveX", 1.0f);
             rigidbody2d.velocity = new Vector2(speed, rigidbody2d.velocity.y);
-            Debug.Log(horizontal);
             //transform.localScale = new Vector2(-1, 1);
 
         }
@@ -66,6 +82,12 @@ public class KnightScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             animator.SetTrigger("attack");
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            ChangeHealth(-1);
 
         }
 
@@ -114,6 +136,27 @@ public class KnightScript : MonoBehaviour
         {
             state = State.IDLE;
         }
+    }
+
+    public void ChangeHealth(int amount)
+    {
+        if (amount < 0)
+        {
+            if (isInvincible)
+            {
+                return;
+            }
+            animator.SetTrigger("hit");
+            isInvincible = true;
+            invincibleTimer = InvincibleTime;
+        }
+
+
+
+        currentHealth = Mathf.Clamp(currentHealth + amount, 0, MaxHealth);
+
+        Debug.Log(currentHealth);
+
     }
 
     //private void setState(State state)
