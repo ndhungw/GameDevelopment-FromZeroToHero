@@ -14,8 +14,12 @@ public class CharacterScript : MonoBehaviour
     new Collider2D collider;
 
     public float InvincibleTime = 2.0f;
-    bool isInvincible;
+    bool isInvincible = true;
     float invincibleTimer;
+
+    private float staggerTime;
+    bool isStaggered = false;
+    private float staggerTimer;
 
     bool canJump = true;
 
@@ -29,28 +33,25 @@ public class CharacterScript : MonoBehaviour
 
     State state = State.IDLE;
 
+    private void Awake()
+    {
+        collider = GetComponent<Collider2D>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        collider = GetComponent<Collider2D>();
         state = State.IDLE;
         currentHealth = MaxHealth;
+        staggerTime = Mathf.Max(InvincibleTime / 4, 1f);
+        staggerTimer = staggerTime;       
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isInvincible)
-        {
-            invincibleTimer -= Time.deltaTime;
-            if (invincibleTimer < 0)
-            {
-                isInvincible = false;
-            }
-        }
-
         if (Input.GetKeyDown(KeyCode.C))
         {
             ChangeHealth(-1);
@@ -98,11 +99,11 @@ public class CharacterScript : MonoBehaviour
             animator.SetTrigger("hit");
             isInvincible = true;
             invincibleTimer = InvincibleTime;
+            isStaggered = true;
+            rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
         }
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, MaxHealth);
-
-        Debug.Log(currentHealth);
     }
 
 
@@ -113,41 +114,85 @@ public class CharacterScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!canJump)
+        if (isInvincible)
         {
-            if (!Input.GetKey(KeyCode.Space))
+            invincibleTimer -= Time.fixedDeltaTime;
+            if (invincibleTimer < 0)
             {
-                canJump = true;
+                isInvincible = false;
             }
         }
 
-        if (Input.GetKey(KeyCode.A))
+        if (isStaggered)
         {
-            transform.localScale = new Vector2(-1, 1);
-            rigidbody2d.velocity = new Vector2(-speed, rigidbody2d.velocity.y);
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            transform.localScale = new Vector2(1, 1);
-            rigidbody2d.velocity = new Vector2(speed, rigidbody2d.velocity.y);
-        }
+            staggerTimer -= Time.fixedDeltaTime;
+            if(staggerTimer < 0)
+            {
+                isStaggered = false;
+                staggerTimer = staggerTime;
+            }
+        } 
 
-        if (!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && CheckIsGrounded() && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)
+        // we skip input checking + input validation if character is staggering
+        if (!isStaggered)
+        {
+            if (!canJump)
+            {
+                if (!Input.GetKey(KeyCode.Space))
+                {
+                    canJump = true;
+                }
+            }
+
+            bool isGrounded = CheckIsGrounded();
+
+            if (!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && isGrounded && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)
             && (state == State.IDLE || state == State.RUNNING))
-        {
-            rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
-            state = State.IDLE;
-        }
+            {
+                rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
+                state = State.IDLE;
+            }  
 
-        if (Input.GetKey(KeyCode.Space) && CheckIsGrounded() && state != State.FALLING && state != State.JUMPING && canJump)
-        {
-            rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x, jumpSpeed);
-            state = State.JUMPING;
-            canJump = false;
+            //Check grounded but we want to get hit vector of the surface the ray is casted into, so we don't use the defined function
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, collider.bounds.extents.y, ground);
+
+            if (Input.GetKey(KeyCode.A))
+            {
+                transform.localScale = new Vector2(-1, 1);
+                if (hit)
+                {
+                    Vector3 moveVect = Vector3.Cross(hit.normal, Vector3.forward);
+                    rigidbody2d.velocity = (-speed) * moveVect;
+                } else
+                {
+                    rigidbody2d.velocity = new Vector2(-speed, rigidbody2d.velocity.y);
+                }
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                transform.localScale = new Vector2(1, 1);
+                if (hit)
+                {
+                    Vector3 moveVect = Vector3.Cross(hit.normal, Vector3.forward);
+                    rigidbody2d.velocity = speed * moveVect;
+                } else
+                {
+                    rigidbody2d.velocity = new Vector2(speed, rigidbody2d.velocity.y);
+                }     
+            }
+
+            if (Input.GetKey(KeyCode.Space) && isGrounded && state != State.FALLING && state != State.JUMPING && canJump)
+            {
+                rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x, jumpSpeed);
+                state = State.JUMPING;
+                canJump = false;
+            }
+
+            checkVelocityState();
+            animator.SetInteger("state", (int)state);
+
+            CheckSlope();
         }
-        checkVelocityState();
-        animator.SetInteger("state", (int)state);
-        CheckSlope();
     }
 
     public void CheckSlope()
@@ -155,8 +200,8 @@ public class CharacterScript : MonoBehaviour
         // Character is grounded, and no axis pressed: 
         if (CheckIsGrounded() && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && state != State.JUMPING && state != State.FALLING)
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, (float)(0.5 * rigidbody2d.gravityScale + speed), ground);
-            
+            RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position, Vector2.down, (float)(0.5 * rigidbody2d.gravityScale + speed), ground);
+
             // Check if we are on the slope
             if (hit && Mathf.Abs(hit.normal.x) > 0.1f && collider.IsTouchingLayers(ground))
             {

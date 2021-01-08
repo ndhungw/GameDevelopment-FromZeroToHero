@@ -8,6 +8,7 @@ public class SkeletonScript : MonoBehaviour
 
     public float DetectRadius;
     public float AttackRange;
+    public float DamageRange;
     public float AttackRate;
 
     public Transform AttackPoint;
@@ -26,8 +27,6 @@ public class SkeletonScript : MonoBehaviour
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         collider = GetComponent<Collider2D>();
-        
-       
     }
 
     // Update is called once per frame
@@ -45,7 +44,7 @@ public class SkeletonScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        Collider2D collider = Physics2D.OverlapCircle(rigidbody2d.position, DetectRadius, playerLayer);
+        Collider2D collider = Physics2D.OverlapCircle(transform.position, DetectRadius, playerLayer);
 
         if (collider != null)
         {
@@ -66,16 +65,14 @@ public class SkeletonScript : MonoBehaviour
                 if (canAttack)
                 {
                     Attack();
-                    
                 }
-                
             }
         }
     }
     private void Attack()
     {
 
-        Collider2D attacked = Physics2D.OverlapCircle(AttackPoint.position, AttackRange, playerLayer);
+        Collider2D attacked = Physics2D.OverlapCircle(AttackPoint.position, DamageRange, playerLayer);
 
         if (attacked != null)
         {
@@ -95,7 +92,9 @@ public class SkeletonScript : MonoBehaviour
     {
         if (AttackPoint != null)
         {
-            Gizmos.DrawWireSphere(AttackPoint.position, AttackRange);
+            Gizmos.DrawWireSphere(AttackPoint.position, DamageRange);
+            Gizmos.DrawWireSphere(transform.position, AttackRange);
+            Gizmos.DrawWireSphere(transform.position, DetectRadius);
         }
     }
 }
