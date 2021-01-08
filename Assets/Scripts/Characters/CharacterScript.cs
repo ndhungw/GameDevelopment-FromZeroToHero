@@ -4,8 +4,8 @@ public class CharacterScript : MonoBehaviour
 {
     public float speed = 3.0f;
     public float jumpSpeed = 10.0f;
-    public LayerMask ground;
     public int MaxHealth = 100;
+    public LayerMask ground;
 
     private int currentHealth = 100;
 
@@ -17,6 +17,8 @@ public class CharacterScript : MonoBehaviour
     bool isInvincible;
     float invincibleTimer;
 
+    bool canJump = true;
+
     enum State
     {
         IDLE = 0,
@@ -26,8 +28,6 @@ public class CharacterScript : MonoBehaviour
     }
 
     State state = State.IDLE;
-
-    
 
     // Start is called before the first frame update
     void Start()
@@ -51,40 +51,10 @@ public class CharacterScript : MonoBehaviour
             }
         }
 
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.localScale = new Vector2(-1, 1);
-            rigidbody2d.velocity = new Vector2(-speed, rigidbody2d.velocity.y);
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            transform.localScale = new Vector2(1, 1);
-            rigidbody2d.velocity = new Vector2(speed, rigidbody2d.velocity.y);
-        }
-
-        if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
-        {
-            rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space) && collider.IsTouchingLayers(ground))
-        {
-            rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x, jumpSpeed);
-            state = State.JUMPING;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            animator.SetTrigger("attack");
-        }
-
         if (Input.GetKeyDown(KeyCode.C))
         {
             ChangeHealth(-1);
         }
-
-        checkVelocityState();
-        animator.SetInteger("state", (int)state);
     }
 
     private void checkVelocityState()
@@ -98,14 +68,13 @@ public class CharacterScript : MonoBehaviour
         }
         else if (state == State.FALLING)
         {
-            if (collider.IsTouchingLayers(ground))
+            if (CheckIsGrounded())
             {
                 state = State.IDLE;
             }
         }
         else if (rigidbody2d.velocity.y < -20f)
         {
-
             state = State.FALLING;
         }
         else if (Mathf.Abs(rigidbody2d.velocity.x) > 2f)
@@ -144,26 +113,52 @@ public class CharacterScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Prevent sliding constantly left or right when horizontal input is not present
-        if(!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
+        if (!canJump)
         {
-            rigidbody2d.constraints = RigidbodyConstraints2D.FreezeAll;
-            rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
-            rigidbody2d.constraints = RigidbodyConstraints2D.None;
-            rigidbody2d.constraints = RigidbodyConstraints2D.FreezeRotation;
+            if (!Input.GetKey(KeyCode.Space))
+            {
+                canJump = true;
+            }
         }
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            transform.localScale = new Vector2(-1, 1);
+            rigidbody2d.velocity = new Vector2(-speed, rigidbody2d.velocity.y);
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            transform.localScale = new Vector2(1, 1);
+            rigidbody2d.velocity = new Vector2(speed, rigidbody2d.velocity.y);
+        }
+
+        if (!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && CheckIsGrounded() && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)
+            && (state == State.IDLE || state == State.RUNNING))
+        {
+            rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
+            state = State.IDLE;
+        }
+
+        if (Input.GetKey(KeyCode.Space) && CheckIsGrounded() && state != State.FALLING && state != State.JUMPING && canJump)
+        {
+            rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x, jumpSpeed);
+            state = State.JUMPING;
+            canJump = false;
+        }
+        checkVelocityState();
+        animator.SetInteger("state", (int)state);
         CheckSlope();
     }
 
     public void CheckSlope()
     {
         // Character is grounded, and no axis pressed: 
-        if (collider.IsTouchingLayers(ground) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && state != State.JUMPING && state != State.FALLING)
+        if (CheckIsGrounded() && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && state != State.JUMPING && state != State.FALLING)
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 10, ground);
-
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, (float)(0.5 * rigidbody2d.gravityScale + speed), ground);
+            
             // Check if we are on the slope
-            if (hit && Mathf.Abs(hit.normal.x) > 0.1f)
+            if (hit && Mathf.Abs(hit.normal.x) > 0.1f && collider.IsTouchingLayers(ground))
             {
                 // We freeze all the rigidbody constraints and put velocity to 0
                 rigidbody2d.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -176,5 +171,12 @@ public class CharacterScript : MonoBehaviour
             rigidbody2d.constraints = RigidbodyConstraints2D.None;
             rigidbody2d.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
+    }
+
+    bool CheckIsGrounded()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, collider.bounds.extents.y, ground);
+
+        return hit;
     }
 }
