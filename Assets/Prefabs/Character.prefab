@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1224242153796852543}
   - component: {fileID: 8049298972207154689}
   m_Layer: 9
-  m_Name: Knight
+  m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -120,7 +120,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 3
+  m_GravityScale: 10
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 0
@@ -139,18 +139,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0060265064, y: 0.19555914}
+  m_Offset: {x: -0.15379691, y: 0.7795658}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 4.375, y: 4.375}
+    oldSize: {x: 17.5, y: 17.5}
     newSize: {x: 1.4, y: 1.4}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.668695, y: 1.1043804}
+  m_Size: {x: 1.8894458, y: 4.4829826}
   m_EdgeRadius: 0
 --- !u!114 &8049298972207154689
 MonoBehaviour:
@@ -164,10 +164,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 100b714928f61a047bfc235fb1ff618c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
-  jumpSpeed: 10
+  speed: 18
+  jumpSpeed: 45
   ground:
     serializedVersion: 2
     m_Bits: 256
   MaxHealth: 100
   InvincibleTime: 2
+  maxGroundedAngle: 45
+  surfaceAngle: 0

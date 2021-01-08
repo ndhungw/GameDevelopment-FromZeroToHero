@@ -16,7 +16,7 @@ public class SkeletonScript : MonoBehaviour
     bool canAttack = true;
 
     Animator animator;
-    Collider2D collider;
+    new Collider2D collider;
     Rigidbody2D rigidbody2d;
     
 
@@ -80,7 +80,7 @@ public class SkeletonScript : MonoBehaviour
         if (attacked != null)
         {
             animator.SetTrigger("hit");
-            KnightScript script = attacked.GetComponent<KnightScript>();
+            CharacterScript script = attacked.GetComponent<CharacterScript>();
 
             if (script != null)
             {
