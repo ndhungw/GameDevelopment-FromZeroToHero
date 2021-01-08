@@ -344,10 +344,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Character
       objectReference: {fileID: 0}
-    - target: {fileID: 1224242153796852540, guid: 142f452247d8b674da76b87ff4c3c2e2, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 6200000, guid: 56e6e126c2e8627458dfa9737ecebaee, type: 2}
     - target: {fileID: 1224242153796852542, guid: 142f452247d8b674da76b87ff4c3c2e2, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -11224,7 +11220,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 56e6e126c2e8627458dfa9737ecebaee, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
