@@ -144,6 +144,7 @@ public class CharacterScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Prevent sliding constantly left or right when horizontal input is not present
         if(!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
         {
             rigidbody2d.constraints = RigidbodyConstraints2D.FreezeAll;
