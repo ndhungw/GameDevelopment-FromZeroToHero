@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 302884549153489813}
   - component: {fileID: 6594914326266282488}
   - component: {fileID: 6058469233713628621}
+  - component: {fileID: 4313487095104597285}
   m_Layer: 10
   m_Name: Skeleton
   m_TagString: Untagged
@@ -203,3 +204,18 @@ MonoBehaviour:
   DamageRange: 2.75
   AttackRate: 1
   AttackPoint: {fileID: 9631262090181634}
+--- !u!114 &4313487095104597285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8720868688192002520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaaea7a59bb48dc488b8a67243fd321b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ground:
+    serializedVersion: 2
+    m_Bits: 256

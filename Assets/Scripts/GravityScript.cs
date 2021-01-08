@@ -2,21 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+public class GravityScript : MonoBehaviour
 {
-    public float movementSpeed;
     public LayerMask ground;
 
-
     private new Collider2D collider;
-    private float speed;
     Rigidbody2D rigidbody2d;
 
     private void Start()
     {
         rigidbody2d = GetComponent<Rigidbody2D>();
         collider = GetComponent<Collider2D>();
-        speed = movementSpeed;
+    }
+
+    private void FixedUpdate()
+    {
+        CheckSlope();
     }
 
     public void CheckSlope()
@@ -24,7 +25,7 @@ public class NewBehaviourScript : MonoBehaviour
         // Object is grounded
         if (CheckIsGrounded())
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, (float)(0.5 * rigidbody2d.gravityScale + speed), ground);
+            RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position, Vector2.down, collider.bounds.extents.y, ground);
 
             // Check if we are on the slope
             if (hit && Mathf.Abs(hit.normal.x) > 0.1f && collider.IsTouchingLayers(ground))
@@ -44,7 +45,7 @@ public class NewBehaviourScript : MonoBehaviour
 
     public bool CheckIsGrounded()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, collider.bounds.extents.y, ground);
+        RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position, Vector2.down, collider.bounds.extents.y, ground);
 
         return hit;
     }

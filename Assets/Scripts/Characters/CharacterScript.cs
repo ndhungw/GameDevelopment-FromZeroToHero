@@ -21,6 +21,10 @@ public class CharacterScript : MonoBehaviour
     bool isStaggered = false;
     private float staggerTimer;
 
+    private bool isAPressedThisUpdate = false;
+    private bool isDPressedThisUpdate = false;
+    private bool isSpacePressedThisUpdate = false;
+
     bool canJump = true;
 
     enum State
@@ -35,7 +39,7 @@ public class CharacterScript : MonoBehaviour
 
     private void Awake()
     {
-        collider = GetComponent<Collider2D>();
+        
     }
 
     // Start is called before the first frame update
@@ -43,6 +47,7 @@ public class CharacterScript : MonoBehaviour
     {
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        collider = GetComponent<Collider2D>();
         state = State.IDLE;
         currentHealth = MaxHealth;
         staggerTime = Mathf.Max(InvincibleTime / 4, 1f);
@@ -136,9 +141,13 @@ public class CharacterScript : MonoBehaviour
         // we skip input checking + input validation if character is staggering
         if (!isStaggered)
         {
+            isAPressedThisUpdate = Input.GetKey(KeyCode.A);
+            isDPressedThisUpdate = Input.GetKey(KeyCode.D);
+            isSpacePressedThisUpdate = Input.GetKey(KeyCode.Space);
+
             if (!canJump)
             {
-                if (!Input.GetKey(KeyCode.Space))
+                if (!isSpacePressedThisUpdate)
                 {
                     canJump = true;
                 }
@@ -146,7 +155,7 @@ public class CharacterScript : MonoBehaviour
 
             bool isGrounded = CheckIsGrounded();
 
-            if (!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && isGrounded && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)
+            if (!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && isGrounded && !isAPressedThisUpdate && !isDPressedThisUpdate
             && (state == State.IDLE || state == State.RUNNING))
             {
                 rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
@@ -156,7 +165,7 @@ public class CharacterScript : MonoBehaviour
             //Check grounded but we want to get hit vector of the surface the ray is casted into, so we don't use the defined function
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, collider.bounds.extents.y, ground);
 
-            if (Input.GetKey(KeyCode.A))
+            if (isAPressedThisUpdate)
             {
                 transform.localScale = new Vector2(-1, 1);
                 if (hit)
@@ -168,7 +177,7 @@ public class CharacterScript : MonoBehaviour
                     rigidbody2d.velocity = new Vector2(-speed, rigidbody2d.velocity.y);
                 }
             }
-            if (Input.GetKey(KeyCode.D))
+            else if (isDPressedThisUpdate)
             {
                 transform.localScale = new Vector2(1, 1);
                 if (hit)
@@ -181,26 +190,30 @@ public class CharacterScript : MonoBehaviour
                 }     
             }
 
-            if (Input.GetKey(KeyCode.Space) && isGrounded && state != State.FALLING && state != State.JUMPING && canJump)
+            if (isSpacePressedThisUpdate && isGrounded && state != State.FALLING && state != State.JUMPING && canJump)
             {
                 rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x, jumpSpeed);
                 state = State.JUMPING;
                 canJump = false;
             }
+            CheckSlope(isAPressedThisUpdate, isDPressedThisUpdate);
 
             checkVelocityState();
             animator.SetInteger("state", (int)state);
-
-            CheckSlope();
         }
+
+        //Set all the press variable to false to prepare for next fixedupdate
+        isAPressedThisUpdate = false;
+        isDPressedThisUpdate = false;
+        isSpacePressedThisUpdate = false;
     }
 
-    public void CheckSlope()
+    public void CheckSlope(bool isAPressed, bool isDPressed)
     {
         // Character is grounded, and no axis pressed: 
-        if (CheckIsGrounded() && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && state != State.JUMPING && state != State.FALLING)
+        if (CheckIsGrounded() && !isAPressed && !isDPressed && state != State.JUMPING && state != State.FALLING)
         {
-            RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position, Vector2.down, (float)(0.5 * rigidbody2d.gravityScale + speed), ground);
+            RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position, Vector2.down, collider.bounds.extents.y, ground);
 
             // Check if we are on the slope
             if (hit && Mathf.Abs(hit.normal.x) > 0.1f && collider.IsTouchingLayers(ground))
@@ -220,7 +233,7 @@ public class CharacterScript : MonoBehaviour
 
     bool CheckIsGrounded()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, collider.bounds.extents.y, ground);
+        RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position, Vector2.down, collider.bounds.extents.y, ground);
 
         return hit;
     }
