@@ -54,7 +54,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4108041805570148089}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.72, y: 0.96, z: 0}
+  m_LocalPosition: {x: -3.82, y: -3.49, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8103703354623047391}
@@ -137,7 +137,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 6fc734a773e37d045a7cb46a881ac63a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -232,8 +232,8 @@ MonoBehaviour:
     m_Bits: 512
   DetectRadius: 12.4
   AttackRange: 7.31
-  DamageRange: 2.75
-  AttackRate: 1
+  DamageRange: 1.77
+  AttackRate: 0.1
   AttackPoint: {fileID: 9631262090181634}
 --- !u!114 &4313487095104597285
 MonoBehaviour:

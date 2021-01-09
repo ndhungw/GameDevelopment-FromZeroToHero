@@ -53,8 +53,7 @@ public class CharacterScript : MonoBehaviour
         collider = GetComponent<Collider2D>();
         state = State.IDLE;
         currentHealth = MaxHealth;
-        staggerTime = Mathf.Max(InvincibleTime / 4, 1f);
-        staggerTimer = staggerTime;       
+        staggerTime = Mathf.Max(InvincibleTime / 4, 0.5f);
     }
 
     // Update is called once per frame
@@ -105,15 +104,23 @@ public class CharacterScript : MonoBehaviour
                 return;
             }
             animator.SetTrigger("hit");
+
             isInvincible = true;
             invincibleTimer = InvincibleTime;
             isStaggered = true;
+            staggerTimer = staggerTime;
+            
             rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
         }
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, MaxHealth);
     }
 
+    // One unit = 8 pixels
+    public void Knockback(float knockbackInUnit)
+    {
+        rigidbody2d.velocity = new Vector2(knockbackInUnit, Mathf.Abs(knockbackInUnit) * (jumpSpeed /speed) / Mathf.Tan(30) );
+    }
 
     /// <summary>
     /// Physics related code down here, logic should be above this part
@@ -137,7 +144,6 @@ public class CharacterScript : MonoBehaviour
             if(staggerTimer < 0)
             {
                 isStaggered = false;
-                staggerTimer = staggerTime;
             }
         } 
 
@@ -154,17 +160,20 @@ public class CharacterScript : MonoBehaviour
 
             bool isGrounded = CheckIsGrounded();
 
-            //Check grounded but we want to get hit vector of the surface the ray is casted into, so we don't use the defined function
+            //Check grounded but we want to get normal vector of the surface the ray is casted into, so we don't use the defined function
             RaycastHit2D hit = Physics2D.Raycast(feet.position, Vector2.down, RaycastDistanceFromFeet, ground);
 
             if (Input.GetKey(KeyCode.A))
             {
                 transform.localScale = new Vector2(-1, 1);
+                // Onground - our rule
                 if (hit && state != State.JUMPING && state != State.FALLING)
                 {
                     Vector3 moveVect = Vector3.Cross(hit.normal, Vector3.forward);
                     rigidbody2d.velocity = (-speed) * moveVect;
-                } else
+                } 
+                // Mid-air - engine's rule
+                else
                 {
                     rigidbody2d.velocity = new Vector2(-speed, rigidbody2d.velocity.y);
                 }
@@ -172,12 +181,13 @@ public class CharacterScript : MonoBehaviour
             else if (Input.GetKey(KeyCode.D))
             {
                 transform.localScale = new Vector2(1, 1);
-                // only check for slope movement is
+                // Onground - our rule
                 if (hit && state != State.JUMPING && state != State.FALLING)
                 {
                     Vector3 moveVect = Vector3.Cross(hit.normal, Vector3.forward);
                     rigidbody2d.velocity = speed * moveVect;
                 }
+                // Mid-air - engine's rule
                 else
                 {
                     rigidbody2d.velocity = new Vector2(speed, rigidbody2d.velocity.y);

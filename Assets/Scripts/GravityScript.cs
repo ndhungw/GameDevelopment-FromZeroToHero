@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Only for entities that is not controlled by hands, use character script for more customizations
 public class GravityScript : MonoBehaviour
 {
     public LayerMask ground;
@@ -12,7 +13,9 @@ public class GravityScript : MonoBehaviour
     Rigidbody2D rigidbody2d;
     new Collider2D collider;
     private bool isMoving = false;
+    private bool isJumping = false;
     private Action callBackOnMoving;
+    private Action callBackOnJumping;
 
     private void Start()
     {
@@ -32,12 +35,47 @@ public class GravityScript : MonoBehaviour
     {
         bool isGrounded = CheckIsGrounded();
 
+        //Check grounded but we want to get normal vector of the surface the ray is casted into, so we don't use the defined function
+        RaycastHit2D hit = Physics2D.Raycast(feet.position, Vector2.down, RaycastDistanceFromFeet, ground);
+
+        if (rigidbody2d.velocity.x < 0 && isMoving)
+        {
+            transform.localScale = new Vector2(-1, 1);
+            //Movement on ground
+            if (hit && !isJumping)
+            {
+                Vector3 moveVect = Vector3.Cross(hit.normal, Vector3.forward);
+                rigidbody2d.velocity = (-Mathf.Abs(rigidbody2d.velocity.x)) * moveVect;
+            }
+        }
+        else if (rigidbody2d.velocity.x > 0 && isMoving)
+        {
+            transform.localScale = new Vector2(1, 1);
+            //Movement on ground
+            if (hit && !isJumping)
+            {
+                Vector3 moveVect = Vector3.Cross(hit.normal, Vector3.forward);
+                rigidbody2d.velocity = Mathf.Abs(rigidbody2d.velocity.x) * moveVect;
+            }
+        }
+
         // Prevent sliding
-        if (!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && isGrounded  && !isMoving)
+        if (!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && isGrounded && !isMoving)
         {
             rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
+        }
+
+        // Callbacks from user
+        if (isMoving)
+        {
             callBackOnMoving?.Invoke();
         }
+
+        if (isJumping)
+        {
+            callBackOnJumping?.Invoke();
+        }
+
         CheckSlope();
     }
 
@@ -47,10 +85,16 @@ public class GravityScript : MonoBehaviour
         callBackOnMoving = callback;
     }
 
+    public void SetEntityJumpingState(bool isJumping, Action callback)
+    {
+        this.isJumping = isJumping;
+        callBackOnJumping = callback;
+    }
+
     public void CheckSlope()
     {
         // Object is grounded
-        if (CheckIsGrounded() && !isMoving)
+        if (CheckIsGrounded() && !isMoving && !isJumping)
         {
             RaycastHit2D hit = Physics2D.Raycast(feet.position, Vector2.down, RaycastDistanceFromFeet, ground);
 
