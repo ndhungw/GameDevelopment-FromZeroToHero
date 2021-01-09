@@ -17,16 +17,12 @@ public class SkeletonScript : MonoBehaviour
     bool canAttack = true;
 
     Animator animator;
-    new Collider2D collider;
     Rigidbody2D rigidbody2d;
     
-
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        collider = GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
@@ -93,7 +89,7 @@ public class SkeletonScript : MonoBehaviour
         if (AttackPoint != null)
         {
             Gizmos.DrawWireSphere(AttackPoint.position, DamageRange);
-            Gizmos.DrawWireSphere(transform.position, AttackRange);
+            Gizmos.DrawWireSphere(GetComponent<Rigidbody2D>().position, AttackRange);
             Gizmos.DrawWireSphere(transform.position, DetectRadius);
         }
     }
