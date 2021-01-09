@@ -184,7 +184,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2149055213249385345}
   m_Layer: 9
-  m_Name: Child
+  m_Name: Feet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
