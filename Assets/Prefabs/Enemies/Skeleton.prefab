@@ -73,6 +73,7 @@ GameObject:
   - component: {fileID: 8562816971292129505}
   - component: {fileID: 302884549153489813}
   - component: {fileID: 6594914326266282488}
+  - component: {fileID: 6549090704491410075}
   - component: {fileID: 2633387106967887696}
   - component: {fileID: 4313487095104597285}
   - component: {fileID: 7466064868967008310}
@@ -216,7 +217,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.3723236, y: 7.058359}
   m_EdgeRadius: 0
---- !u!114 &2633387106967887696
+--- !u!114 &6549090704491410075
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -224,6 +225,27 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8720868688192002520}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b22a63ceff01336428792331d2d5f1a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  DetectRadius: 12.04
+  AttackRange: 7.31
+  DamageRange: 1.77
+  AttackRate: 0.5
+  AttackPoint: {fileID: 9631262090181634}
+  ATKKnockBack: 3.75
+--- !u!114 &2633387106967887696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8720868688192002520}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a9fceb43b468d4d4e9b0f851fc4ce668, type: 3}
   m_Name: 
@@ -234,7 +256,7 @@ MonoBehaviour:
   DetectRadius: 12.04
   AttackRange: 7.31
   DamageRange: 1.77
-  AttackRate: 0.1
+  AttackRate: 0.5
   AttackPoint: {fileID: 9631262090181634}
   ATKKnockBack: 3.75
 --- !u!114 &4313487095104597285
@@ -261,9 +283,9 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8720868688192002520}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9d1f8f041a4a5e469f55eb86497a684, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ChasingSpeed: 3
+  ChasingSpeed: 5

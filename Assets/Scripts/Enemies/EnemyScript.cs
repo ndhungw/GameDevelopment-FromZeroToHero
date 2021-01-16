@@ -22,6 +22,15 @@ public class EnemyScript : MonoBehaviour
     //Components
     Animator animator;
     GravityScript gravityScript;
+    Rigidbody2D rigidbody2D;
+
+    enum State
+    {
+        IDLE = 0,
+        RUNNING = 1,
+        JUMPING = 2,
+        FALLING = 3,
+    }
 
     //Movement
     State state = State.IDLE;
@@ -33,6 +42,7 @@ public class EnemyScript : MonoBehaviour
         animator = GetComponent<Animator>();
         gravityScript = GetComponent<GravityScript>();
         movingDirection = UnityEngine.Random.Range(0, 1);
+        rigidbody2D = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -51,25 +61,7 @@ public class EnemyScript : MonoBehaviour
         // If enemy is attacking, check for damage range around the attack point for possible collision with player
         if (isAttacking)
         {
-            var circleCastResults = Physics2D.CircleCastAll(AttackPoint.position, DamageRange, Vector2.up, Mathf.Infinity, PlayerLayer);
-
-            //if player was attacked
-            if (circleCastResults != null)
-            {
-                foreach (var result in circleCastResults)
-                {
-                    Collider2D attacked = result.collider;
-
-                    CharacterScript script = attacked.GetComponent<CharacterScript>();
-
-                    // change health and knocked back
-                    if (script != null)
-                    {
-                        script.ChangeHealth(-10);
-                        script.Knockback((float)(transform.localScale.x * ATKKnockBack));
-                    }
-                }
-            }
+            ExecuteAttack();
         }
 
         // Detect player
@@ -99,6 +91,8 @@ public class EnemyScript : MonoBehaviour
             }
         }
 
+        checkVelocityState();
+        animator.SetInteger("state", (int)state);
 
     }
 
@@ -115,11 +109,7 @@ public class EnemyScript : MonoBehaviour
         isAttacking = false;
     }
 
-    enum State
-    {
-        IDLE = 0,
-        RUNNING = 1,
-    }
+    
 
     private void OnDrawGizmosSelected()
     {
@@ -128,6 +118,41 @@ public class EnemyScript : MonoBehaviour
             Gizmos.DrawWireSphere(AttackPoint.position, DamageRange);
             Gizmos.DrawWireSphere(GetComponent<Rigidbody2D>().position, AttackRange);
             Gizmos.DrawWireSphere(transform.position, DetectRadius);
+        }
+    }
+
+    private void checkVelocityState()
+    {
+        if (Mathf.Abs(rigidbody2D.velocity.x) > 1f)
+        {
+            state = State.RUNNING;
+        }
+        else
+        {
+            state = State.IDLE;
+        }
+    }
+
+    public virtual void ExecuteAttack()
+    {
+        var circleCastResults = Physics2D.CircleCastAll(AttackPoint.position, DamageRange, Vector2.up, Mathf.Infinity, PlayerLayer);
+
+        //if player was attacked
+        if (circleCastResults != null)
+        {
+            foreach (var result in circleCastResults)
+            {
+                Collider2D attacked = result.collider;
+
+                CharacterScript script = attacked.GetComponent<CharacterScript>();
+
+                // change health and knocked back
+                if (script != null)
+                {
+                    script.ChangeHealth(-10);
+                    script.Knockback((float)(transform.localScale.x * ATKKnockBack));
+                }
+            }
         }
     }
 }

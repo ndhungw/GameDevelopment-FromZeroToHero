@@ -13,6 +13,8 @@ public class ChasePlayer : MonoBehaviour
 
     Rigidbody2D rigidbody2D;
 
+    Animator animator;
+
     float detectRadius;
     LayerMask playerLayer;
     // Start is called before the first frame update
@@ -20,6 +22,7 @@ public class ChasePlayer : MonoBehaviour
     {
         enemyScript = GetComponent<EnemyScript>();
         gravityScript = GetComponent<GravityScript>();
+        animator = GetComponent<Animator>();
         detectRadius = enemyScript.DetectRadius;
         playerLayer = enemyScript.PlayerLayer;
 
@@ -36,23 +39,44 @@ public class ChasePlayer : MonoBehaviour
         {
             moveTorward(collider);
         }
+        else
+        {
+            stopMoving();
+        }
+
+    }
+
+    private void stopMoving()
+    {
+        rigidbody2D.velocity = new Vector2(0.0f, rigidbody2D.velocity.y);
+
+        gravityScript.SetEntityMovingState(false, null);
     }
 
     private void moveTorward(Collider2D collider)
     {
         float distance = collider.transform.position.x - gameObject.transform.position.x;
 
-        //enemy on the left
-        if (distance < 0)
+        if (Mathf.Abs(distance) >= enemyScript.AttackRange)
         {
-            rigidbody2D.velocity = new Vector2(-ChasingSpeed, 0);
+            //enemy on the left
+            if (distance < 0)
+            {
+                rigidbody2D.velocity = new Vector2(-ChasingSpeed, 0.0f);
+            }
+            else
+            {
+                rigidbody2D.velocity = new Vector2(ChasingSpeed, 0.0f);
+            }
+            gravityScript.SetEntityMovingState(true, null);
         }
-        else if (distance > 0)
+        else
         {
-            rigidbody2D.velocity = new Vector2(ChasingSpeed, 0);
+            stopMoving();
         }
+        
 
-        gravityScript.SetEntityMovingState(true, null);
+        
 
     }
 }
