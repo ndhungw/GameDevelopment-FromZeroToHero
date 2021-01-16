@@ -15,14 +15,14 @@ public class EnemyScript : MonoBehaviour
     public float ATKKnockBack = 3.75f;
 
     //Attack related
-    float nextAttackTime = 0f;
-    bool canAttack = true;
-    bool isAttacking = false;
+    protected float nextAttackTime = 0f;
+    protected bool canAttack = true;
+    protected bool isAttacking = false;
 
     //Components
-    Animator animator;
-    GravityScript gravityScript;
-    Rigidbody2D rigidbody2D;
+    protected Animator animator;
+    protected GravityScript gravityScript;
+    protected Rigidbody2D rigidbody2D;
 
     enum State
     {
@@ -96,7 +96,7 @@ public class EnemyScript : MonoBehaviour
 
     }
 
-    private void Attack()
+    public virtual void Attack()
     {
         isAttacking = true;
         animator.SetTrigger("attack");
@@ -135,24 +135,6 @@ public class EnemyScript : MonoBehaviour
 
     public virtual void ExecuteAttack()
     {
-        var circleCastResults = Physics2D.CircleCastAll(AttackPoint.position, DamageRange, Vector2.up, Mathf.Infinity, PlayerLayer);
 
-        //if player was attacked
-        if (circleCastResults != null)
-        {
-            foreach (var result in circleCastResults)
-            {
-                Collider2D attacked = result.collider;
-
-                CharacterScript script = attacked.GetComponent<CharacterScript>();
-
-                // change health and knocked back
-                if (script != null)
-                {
-                    script.ChangeHealth(-10);
-                    script.Knockback((float)(transform.localScale.x * ATKKnockBack));
-                }
-            }
-        }
     }
 }
