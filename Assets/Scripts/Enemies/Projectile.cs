@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    Rigidbody2D rigidbody2D;
+    Rigidbody2D rigidbody2d;
     // Start is called before the first frame update
     void Awake()
     {
-        rigidbody2D = GetComponent<Rigidbody2D>();
+        rigidbody2d = GetComponent<Rigidbody2D>();
     }
 
     // Start is called before the first frame update
@@ -21,7 +21,7 @@ public class Projectile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.magnitude > 100.0f)
+        if (transform.position.magnitude > 20.0f)
         {
             Destroy(gameObject);
         }
@@ -29,7 +29,7 @@ public class Projectile : MonoBehaviour
 
     public void Launch(Vector2 lookDirection, int v)
     {
-        rigidbody2D.AddForce(lookDirection * v);
+        rigidbody2d.AddForce(lookDirection * v);
     }
 
     void OnCollisionEnter2D(Collision2D collision)

@@ -11,18 +11,28 @@ public class EnemyScript : MonoBehaviour
     public float DamageRange;
     public float AttackRate;
     public Transform AttackPoint;
+
+    public float StaggerTime;
+    public int MaxHealth = 100;
     //In screen units
     public float ATKKnockBack = 3.75f;
+
 
     //Attack related
     protected float nextAttackTime = 0f;
     protected bool canAttack = true;
     protected bool isAttacking = false;
 
+    //getting hit related
+    protected int currentHealth;
+    
+    bool isStaggered = false;
+    private float staggerTimer;
+
     //Components
     protected Animator animator;
     protected GravityScript gravityScript;
-    protected Rigidbody2D rigidbody2D;
+    protected Rigidbody2D rigidbody2d;
 
     enum State
     {
@@ -42,13 +52,18 @@ public class EnemyScript : MonoBehaviour
         animator = GetComponent<Animator>();
         gravityScript = GetComponent<GravityScript>();
         movingDirection = UnityEngine.Random.Range(0, 1);
-        rigidbody2D = GetComponent<Rigidbody2D>();
+        rigidbody2d = GetComponent<Rigidbody2D>();
+
+        currentHealth = MaxHealth;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKey(KeyCode.E))
+        {
+            ChangeHealth(-MaxHealth);
+        }
     }
 
     void FixedUpdate()
@@ -62,6 +77,16 @@ public class EnemyScript : MonoBehaviour
         if (isAttacking)
         {
             ExecuteAttack();
+        }
+
+        if (isStaggered)
+        {
+            staggerTimer -= Time.fixedDeltaTime;
+            if (staggerTimer < 0)
+            {
+                isStaggered = false;
+            }
+            return;
         }
 
         // Detect player
@@ -109,6 +134,27 @@ public class EnemyScript : MonoBehaviour
         isAttacking = false;
     }
 
+    public void ChangeHealth(int amount)
+    {
+        if (amount < 0)
+        {
+            animator.SetTrigger("hit");
+
+            isStaggered = true;
+            staggerTimer = StaggerTime;
+
+            rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
+        }
+
+        currentHealth = Mathf.Clamp(currentHealth + amount, 0, MaxHealth);
+
+        if (currentHealth <= 0)
+        {
+            animator.SetTrigger("dead");
+            //Destroy(gameObject);
+        }
+    }
+
     
 
     private void OnDrawGizmosSelected()
@@ -123,7 +169,7 @@ public class EnemyScript : MonoBehaviour
 
     private void checkVelocityState()
     {
-        if (Mathf.Abs(rigidbody2D.velocity.x) > 1f)
+        if (Mathf.Abs(rigidbody2d.velocity.x) > 1f)
         {
             state = State.RUNNING;
         }
