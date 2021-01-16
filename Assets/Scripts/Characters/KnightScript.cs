@@ -7,6 +7,14 @@ public class KnightScript : MonoBehaviour
     public LayerMask ground;
     public int MaxHealth = 100;
 
+    public float AttackRange;
+    public float AttackRate;
+
+    public Transform AttackPoint;
+
+    public LayerMask enemyLayer;
+
+
     private int currentHealth = 100;
 
     Rigidbody2D rigidbody2d;
@@ -14,6 +22,8 @@ public class KnightScript : MonoBehaviour
     float vertical;
     Animator animator;
     Collider2D collider;
+    float nextAttackTime = 0f;
+    bool canAttack = true;
 
     public float InvincibleTime = 2.0f;
     bool isInvincible;
@@ -53,6 +63,16 @@ public class KnightScript : MonoBehaviour
             }
         }
 
+        if (Time.time >= nextAttackTime)
+        {
+
+            canAttack = true;
+        }
+        else
+        {
+            canAttack = false;
+        }
+
         horizontal = Input.GetAxis("Horizontal");
 
         if (horizontal < 0)
@@ -79,11 +99,17 @@ public class KnightScript : MonoBehaviour
             //setState(State.JUMPING);
         }
 
+        
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            animator.SetTrigger("attack");
-
+            if (canAttack)
+            {
+                animator.SetTrigger("attack");
+                Attack();
+            }
         }
+
 
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -156,6 +182,25 @@ public class KnightScript : MonoBehaviour
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, MaxHealth);
 
         Debug.Log(currentHealth);
+
+    }
+
+    private void Attack()
+    {
+
+        Collider2D attacked = Physics2D.OverlapCircle(AttackPoint.position, AttackRange, enemyLayer);
+
+        if (attacked != null)
+        {
+            animator.SetTrigger("attack");
+            KnightScript script = attacked.GetComponent<KnightScript>();
+
+            if (script != null)
+            {
+                script.ChangeHealth(-30);
+                nextAttackTime = Time.time + 1f / AttackRate;
+            }
+        }
 
     }
 

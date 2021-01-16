@@ -12,8 +12,11 @@ public class SkeletonScript : MonoBehaviour
 
     public Transform AttackPoint;
 
+    public int MaxHealth = 100;
+
     float nextAttackTime = 0f;
     bool canAttack = true;
+    int currentHealth;
 
     Animator animator;
     Collider2D collider;
@@ -26,6 +29,7 @@ public class SkeletonScript : MonoBehaviour
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         collider = GetComponent<Collider2D>();
+        currentHealth = MaxHealth;
         
        
     }
@@ -89,6 +93,14 @@ public class SkeletonScript : MonoBehaviour
             }
         }
         
+    }
+
+    public void ChangeHealth(int amount)
+    {
+        currentHealth = Mathf.Clamp(currentHealth + amount, 0, MaxHealth);
+
+        Debug.Log(currentHealth);
+
     }
 
     private void OnDrawGizmosSelected()

@@ -202,3 +202,4 @@ MonoBehaviour:
   AttackRange: 0.85
   AttackRate: 1
   AttackPoint: {fileID: 9631262090181634}
+  MaxHealth: 50
