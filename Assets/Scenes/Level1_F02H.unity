@@ -399,7 +399,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1224242153796852531, guid: 142f452247d8b674da76b87ff4c3c2e2, type: 3}
       propertyPath: m_Name
-      value: Character
+      value: Knight
       objectReference: {fileID: 0}
     - target: {fileID: 1224242153796852542, guid: 142f452247d8b674da76b87ff4c3c2e2, type: 3}
       propertyPath: m_RootOrder
