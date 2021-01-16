@@ -289,7 +289,6 @@ GameObject:
   - component: {fileID: 573150797}
   - component: {fileID: 573150801}
   - component: {fileID: 573150800}
-  - component: {fileID: 573150802}
   - component: {fileID: 573150803}
   m_Layer: 10
   m_Name: Mudborn
@@ -376,7 +375,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 573150796}
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: -16.82, y: 3.57, z: 0}
+  m_LocalPosition: {x: -17.15, y: 3.26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 430763444}
@@ -430,29 +429,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 4.732574, y: 1.821868}
   m_EdgeRadius: 0
---- !u!114 &573150802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 573150796}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9fceb43b468d4d4e9b0f851fc4ce668, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayerLayer:
-    serializedVersion: 2
-    m_Bits: 512
-  DetectRadius: 1.15
-  AttackRange: 1.15
-  DamageRange: 0
-  AttackRate: 0
-  AttackPoint: {fileID: 430763444}
-  StaggerTime: 0
-  MaxHealth: 100
-  ATKKnockBack: 3.75
 --- !u!114 &573150803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,7 +449,7 @@ MonoBehaviour:
   DamageRange: 1.15
   AttackRate: 0.3
   AttackPoint: {fileID: 430763444}
-  StaggerTime: 0
+  StaggerTime: 1
   MaxHealth: 100
   ATKKnockBack: 3.75
 --- !u!1001 &908901241
@@ -11849,6 +11825,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2767333965339399645, guid: 70d042cd5c2ad7d45964e2271aa5e5fc, type: 3}
+      propertyPath: StaggerTime
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6473839339794495409, guid: 70d042cd5c2ad7d45964e2271aa5e5fc, type: 3}
       propertyPath: m_Name
       value: Ghost
