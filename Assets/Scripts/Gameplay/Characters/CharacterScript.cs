@@ -27,7 +27,7 @@ public class CharacterScript : MonoBehaviour
 
     bool canJump = true;
 
-    enum State
+    public enum State
     {
         IDLE = 0,
         RUNNING = 1,
@@ -35,7 +35,7 @@ public class CharacterScript : MonoBehaviour
         FALLING = 3,
     }
 
-    State state = State.IDLE;
+    public State state = State.IDLE;
 
     // Start is called before the first frame update
     void Start()
@@ -56,32 +56,25 @@ public class CharacterScript : MonoBehaviour
         staggerTime = Mathf.Max(InvincibleTime / 4, 0.5f);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            ChangeHealth(-1);
-        }
-    }
-
     private void checkVelocityState()
     {
+        bool isGrounded = CheckIsGrounded();
+
         if (state == State.JUMPING)
         {
-            if (rigidbody2d.velocity.y < -0.2f)
+            if (!isGrounded && rigidbody2d.velocity.y < -0.1f)
             {
                 state = State.FALLING;
             }
         }
         else if (state == State.FALLING)
         {
-            if (CheckIsGrounded())
+            if (isGrounded)
             {
                 state = State.IDLE;
             }
         }
-        else if (rigidbody2d.velocity.y < -20f)
+        else if (!isGrounded && rigidbody2d.velocity.y < -speed)
         {
             state = State.FALLING;
         }
@@ -127,11 +120,11 @@ public class CharacterScript : MonoBehaviour
     /// </summary>
     /// 
 
-    void FixedUpdate()
+    void Update()
     {
         if (isInvincible)
         {
-            invincibleTimer -= Time.fixedDeltaTime;
+            invincibleTimer -= Time.deltaTime;
             if (invincibleTimer < 0)
             {
                 isInvincible = false;
@@ -140,7 +133,7 @@ public class CharacterScript : MonoBehaviour
 
         if (isStaggered)
         {
-            staggerTimer -= Time.fixedDeltaTime;
+            staggerTimer -= Time.deltaTime;
             if(staggerTimer < 0)
             {
                 isStaggered = false;
@@ -184,21 +177,25 @@ public class CharacterScript : MonoBehaviour
                 // Onground - our rule
                 if (hit && state != State.JUMPING && state != State.FALLING)
                 {
-                    Vector3 moveVect = Vector3.Cross(hit.normal, Vector3.forward);
-                    rigidbody2d.velocity = speed * moveVect;
+                   Vector3 moveVect = Vector3.Cross(hit.normal, Vector3.forward);
+                   rigidbody2d.velocity = speed * moveVect;
                 }
                 // Mid-air - engine's rule
                 else
                 {
                     rigidbody2d.velocity = new Vector2(speed, rigidbody2d.velocity.y);
                 }     
-            }
+            } 
 
-            // Stop sliding on X after apply velocity from button
+            // Stop sliding on X after apply velocity from button and dash
             if (!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && isGrounded && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)
                 && (state == State.IDLE || state == State.RUNNING))
             {
+                rigidbody2d.constraints = RigidbodyConstraints2D.FreezePositionX;
+                rigidbody2d.freezeRotation = true;
                 rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
+                rigidbody2d.constraints = RigidbodyConstraints2D.None;
+                rigidbody2d.constraints = RigidbodyConstraints2D.FreezeRotation;
                 state = State.IDLE;
             }
 
