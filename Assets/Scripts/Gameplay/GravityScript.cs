@@ -116,7 +116,7 @@ public class GravityScript : MonoBehaviour
         }
     }
 
-    bool CheckIsGrounded()
+    public bool CheckIsGrounded()
     {
         RaycastHit2D hit = Physics2D.Raycast(feet.position, Vector2.down, RaycastDistanceFromFeet, ground);
         return hit && collider.IsTouchingLayers(ground);
