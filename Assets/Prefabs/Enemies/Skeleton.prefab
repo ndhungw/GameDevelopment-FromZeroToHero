@@ -73,8 +73,9 @@ GameObject:
   - component: {fileID: 8562816971292129505}
   - component: {fileID: 302884549153489813}
   - component: {fileID: 6594914326266282488}
-  - component: {fileID: 6058469233713628621}
+  - component: {fileID: 6549090704491410075}
   - component: {fileID: 4313487095104597285}
+  - component: {fileID: 7466064868967008310}
   m_Layer: 10
   m_Name: Skeleton
   m_TagString: Untagged
@@ -215,7 +216,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.3723236, y: 7.058359}
   m_EdgeRadius: 0
---- !u!114 &6058469233713628621
+--- !u!114 &6549090704491410075
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -227,14 +228,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b22a63ceff01336428792331d2d5f1a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerLayer:
+  PlayerLayer:
     serializedVersion: 2
     m_Bits: 512
-  DetectRadius: 12.4
+  DetectRadius: 12.04
   AttackRange: 7.31
   DamageRange: 1.77
-  AttackRate: 0.1
+  AttackRate: 0.5
   AttackPoint: {fileID: 9631262090181634}
+  ATKKnockBack: 3.75
 --- !u!114 &4313487095104597285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,3 +254,16 @@ MonoBehaviour:
     m_Bits: 256
   feet: {fileID: 5876918623263915776}
   RaycastDistanceFromFeet: 2
+--- !u!114 &7466064868967008310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8720868688192002520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9d1f8f041a4a5e469f55eb86497a684, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChasingSpeed: 5
