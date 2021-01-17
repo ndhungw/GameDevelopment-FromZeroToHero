@@ -1,37 +1,48 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Game_System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KnightController : MonoBehaviour
+public class KnightController : CharacterScript
 {
     public LayerMask enemyLayer;
     public float DamageRange;
     public Transform AttackPoint;
+    private int BaseDamage = 50;
 
-    public float delayBetweenAttacks = 1.0f;
+    private float delayBetweenAttacks = 1.0f;
     private float delayTimer = 0.0f;
+    private bool canAttack = true;
 
     //Attack related
     bool isAttacking = false;
 
-    Animator animator;
-
-    private void Start()
+    private new void Start()
     {
-        animator = GetComponent<Animator>();
-
-        delayTimer = delayBetweenAttacks;
+        base.Start();
+        Knight characterStats = (Knight) GameManager.GM.numbersForCharacters[GameManager.CHARACTERS.KNIGHT];
+        speed = characterStats.Speed;
+        jumpSpeed = characterStats.JumpSpeed;
+        MaxHealth = characterStats.MaxHealth;
+        BaseDamage = characterStats.BaseDamage;
+        delayBetweenAttacks = characterStats.timeBetweenSwings;
+        currentHealth = MaxHealth;
     }
 
     private void Update()
     {
+        if (isHit)
+        {
+            canAttack = true;
+            isAttacking = false;
+        }
         if (delayTimer > 0)
         {
             delayTimer -= Time.deltaTime;
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (Input.GetKeyDown(KeyCode.Mouse0) && canAttack)
             {
                 Attack();     
             }
@@ -50,10 +61,10 @@ public class KnightController : MonoBehaviour
                     //to be filled in
                     EnemyScript script = attacked.GetComponent<EnemyScript>();
 
-                    // change health and knocked back
+                    // change health
                     if (script != null)
                     {
-                        script.ChangeHealth(-50);
+                        script.ChangeHealth(-BaseDamage);
                     }
                 }
             }
@@ -63,6 +74,7 @@ public class KnightController : MonoBehaviour
     private void Attack()
     {
         isAttacking = true;
+        canAttack = false;
         animator.SetTrigger("attack");
         delayTimer = delayBetweenAttacks;
     }
@@ -70,10 +82,13 @@ public class KnightController : MonoBehaviour
     private void OnAttackAnimationEnd()
     {
         isAttacking = false;
+        canAttack = true;
+        isIFraming = false;
     }
 
-    private void OnDrawGizmosSelected()
+    private new void OnDrawGizmosSelected()
     {
+        base.OnDrawGizmosSelected();
         if (AttackPoint != null)
         {
             Gizmos.DrawWireSphere(AttackPoint.position, DamageRange);

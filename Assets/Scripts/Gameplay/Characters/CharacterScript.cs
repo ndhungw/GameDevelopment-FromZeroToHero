@@ -3,23 +3,28 @@ using UnityEngine;
 
 public class CharacterScript : MonoBehaviour
 {
-    public float speed = 3.0f;
-    public float jumpSpeed = 10.0f;
-    public int MaxHealth = 100;
     public LayerMask ground;
     public Transform feet;
     //How many screen unit to cast the ray
     public float RaycastDistanceFromFeet = 2f;
 
-    private int currentHealth = 100;
+    protected int currentHealth = 100;
+    protected float speed = 3.0f;
+    protected float jumpSpeed = 10.0f;
+    protected int MaxHealth = 100;
 
-    Rigidbody2D rigidbody2d;
-    Animator animator;
-    new Collider2D collider;
+    protected Rigidbody2D rigidbody2d;
+    protected Animator animator;
+    protected new Collider2D collider;
 
     public float InvincibleTime = 2.0f;
-    bool isInvincible = true;
+    protected bool isInvincible = true;
     float invincibleTimer;
+
+    protected bool isIFraming = false;
+
+    protected bool isHit = false;
+    protected bool isActuallyDead = false;
 
     private float staggerTime;
     bool isStaggered = false;
@@ -38,7 +43,7 @@ public class CharacterScript : MonoBehaviour
     public State state = State.IDLE;
 
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         if (!feet)
         {
@@ -52,8 +57,14 @@ public class CharacterScript : MonoBehaviour
         animator = GetComponent<Animator>();
         collider = GetComponent<Collider2D>();
         state = State.IDLE;
-        currentHealth = MaxHealth;
         staggerTime = Mathf.Max(InvincibleTime / 4, 0.5f);
+    }
+
+    // Called before start and repeated on every reenabling attempt
+    private void OnEnable()
+    {
+        isInvincible = true;
+        invincibleTimer = 0.5f;
     }
 
     private void checkVelocityState()
@@ -72,6 +83,7 @@ public class CharacterScript : MonoBehaviour
             if (isGrounded)
             {
                 state = State.IDLE;
+                canJump = true;
             }
         }
         else if (!isGrounded && rigidbody2d.velocity.y < -speed)
@@ -92,10 +104,11 @@ public class CharacterScript : MonoBehaviour
     {
         if (amount < 0)
         {
-            if (isInvincible)
+            if (isInvincible || isIFraming)
             {
                 return;
             }
+            isHit = true;
             animator.SetTrigger("hit");
             GameManager.GM?.CreateEnemyDamageText(Mathf.Abs(amount), gameObject);
 
@@ -111,8 +124,14 @@ public class CharacterScript : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            isInvincible = true;
             animator.SetTrigger("dead");
         }
+    }
+
+    private void hitAnimationEnd()
+    {
+        isHit = false;
     }
 
     public int GetHealth()
@@ -126,12 +145,7 @@ public class CharacterScript : MonoBehaviour
         rigidbody2d.velocity = new Vector2(knockbackInUnit, Mathf.Abs(knockbackInUnit) * (jumpSpeed /speed) / Mathf.Tan(30) );
     }
 
-    /// <summary>
-    /// Physics related code down here, logic should be above this part
-    /// </summary>
-    /// 
-
-    void Update()
+    protected void FixedUpdate()
     {
         if (isInvincible)
         {
@@ -149,21 +163,13 @@ public class CharacterScript : MonoBehaviour
             {
                 isStaggered = false;
             }
-        } 
+        }
+
+        bool isGrounded = CheckIsGrounded();
 
         // we skip input checking + input validation if character is staggering
-        if (!isStaggered)
+        if (!isStaggered && currentHealth > 0)
         {
-            if (!canJump)
-            {
-                if (!Input.GetKey(KeyCode.Space))
-                {
-                    canJump = true;
-                }
-            }
-
-            bool isGrounded = CheckIsGrounded();
-
             //Check grounded but we want to get normal vector of the surface the ray is casted into, so we don't use the defined function
             RaycastHit2D hit = Physics2D.Raycast(feet.position, Vector2.down, RaycastDistanceFromFeet, ground);
 
@@ -182,7 +188,7 @@ public class CharacterScript : MonoBehaviour
                     rigidbody2d.velocity = new Vector2(-speed, rigidbody2d.velocity.y);
                 }
             }
-            else if (Input.GetKey(KeyCode.D))
+            if (Input.GetKey(KeyCode.D))
             {
                 transform.localScale = new Vector2(1, 1);
                 // Onground - our rule
@@ -198,18 +204,6 @@ public class CharacterScript : MonoBehaviour
                 }     
             } 
 
-            // Stop sliding on X after apply velocity from button and dash
-            if (!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && isGrounded && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)
-                && (state == State.IDLE || state == State.RUNNING))
-            {
-                rigidbody2d.constraints = RigidbodyConstraints2D.FreezePositionX;
-                rigidbody2d.freezeRotation = true;
-                rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
-                rigidbody2d.constraints = RigidbodyConstraints2D.None;
-                rigidbody2d.constraints = RigidbodyConstraints2D.FreezeRotation;
-                state = State.IDLE;
-            }
-
             // Jump input
             if (Input.GetKey(KeyCode.Space) && isGrounded && canJump)
             {
@@ -217,12 +211,24 @@ public class CharacterScript : MonoBehaviour
                 state = State.JUMPING;
                 canJump = false;
             }
-
-            CheckSlope(Input.GetKey(KeyCode.A), Input.GetKey(KeyCode.D));
-
-            checkVelocityState();
-            animator.SetInteger("state", (int)state);
         }
+
+        // Stop sliding on X after apply velocity from button
+        if (!Mathf.Approximately(rigidbody2d.velocity.x, 0.0f) && isGrounded && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)
+            && (state == State.IDLE || state == State.RUNNING))
+        {
+            rigidbody2d.constraints = RigidbodyConstraints2D.FreezePositionX;
+            rigidbody2d.freezeRotation = true;
+            rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
+            rigidbody2d.constraints = RigidbodyConstraints2D.None;
+            rigidbody2d.constraints = RigidbodyConstraints2D.FreezeRotation;
+            state = State.IDLE;
+        }
+
+        CheckSlope(Input.GetKey(KeyCode.A), Input.GetKey(KeyCode.D));
+
+        checkVelocityState();
+        animator.SetInteger("state", (int)state);
     }
 
     public void CheckSlope(bool isAPressed, bool isDPressed)
@@ -256,8 +262,29 @@ public class CharacterScript : MonoBehaviour
         return hit && collider.IsTouchingLayers(ground);
     }
 
-    private void OnDrawGizmosSelected()
+    public void DeactivateOnDead()
+    {
+        gameObject.SetActive(false);
+        isActuallyDead = true;
+    }
+
+    protected void OnDrawGizmosSelected()
     {
         Gizmos.DrawLine(feet.position, new Vector3(feet.position.x, feet.position.y - RaycastDistanceFromFeet, 0));
+    }
+
+    public void startIFraming()
+    {
+        isIFraming = true;
+    }
+
+    public void endIFraming()
+    {
+        isIFraming = false;
+    }
+
+    public bool isCharacterActuallyDead()
+    {
+        return isActuallyDead;
     }
 }

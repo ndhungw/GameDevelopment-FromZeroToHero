@@ -22,7 +22,7 @@ public class SkeletonScript : EnemyScript
                 // change health and knocked back
                 if (script != null)
                 {
-                    script.ChangeHealth(-10);
+                    script.ChangeHealth(-30);
                     script.Knockback((float)(transform.localScale.x * ATKKnockBack));
                 }
             }

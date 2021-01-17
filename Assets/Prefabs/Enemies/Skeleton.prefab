@@ -236,7 +236,10 @@ MonoBehaviour:
   DamageRange: 1.77
   AttackRate: 0.5
   AttackPoint: {fileID: 9631262090181634}
+  StaggerTime: 0
+  MaxHealth: 100
   ATKKnockBack: 3.75
+  InvincibleTime: 0.5
 --- !u!114 &4313487095104597285
 MonoBehaviour:
   m_ObjectHideFlags: 0

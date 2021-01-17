@@ -24,7 +24,7 @@ public class EnemyScript : MonoBehaviour
     protected bool isAttacking = false;
 
     //Invincible related
-    public float InvincibleTime = 1.0f;
+    public float InvincibleTime = 0.5f;
     bool isInvincible = true;
     float invincibleTimer;
 

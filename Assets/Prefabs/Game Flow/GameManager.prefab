@@ -47,4 +47,5 @@ MonoBehaviour:
   enemyDamageTextPrefab: {fileID: 3748575175900762220, guid: 15fe6e03281e16b48bd10c571eebeffc, type: 3}
   playerPrefabs:
   - {fileID: 1224242153796852531, guid: 142f452247d8b674da76b87ff4c3c2e2, type: 3}
+  - {fileID: 1422577016446716405, guid: 17751b9ed9aa4c846be70feecccd4239, type: 3}
   spawnPoint: {fileID: 0}
