@@ -43,3 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c049a362b5f74a84885d5ba595e6e91f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerDamageTextPrefab: {fileID: 78125934069695212, guid: b0c6df9e77a264f4186ac051943eda2b, type: 3}
+  enemyDamageTextPrefab: {fileID: 3748575175900762220, guid: 15fe6e03281e16b48bd10c571eebeffc, type: 3}
+  playerPrefabs:
+  - {fileID: 1224242153796852531, guid: 142f452247d8b674da76b87ff4c3c2e2, type: 3}
+  spawnPoint: {fileID: 0}

@@ -97,6 +97,7 @@ public class CharacterScript : MonoBehaviour
                 return;
             }
             animator.SetTrigger("hit");
+            GameManager.GM?.CreateEnemyDamageText(Mathf.Abs(amount), gameObject);
 
             isInvincible = true;
             invincibleTimer = InvincibleTime;
@@ -107,6 +108,16 @@ public class CharacterScript : MonoBehaviour
         }
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, MaxHealth);
+
+        if (currentHealth <= 0)
+        {
+            animator.SetTrigger("dead");
+        }
+    }
+
+    public int GetHealth()
+    {
+        return currentHealth;
     }
 
     // One unit = 8 pixels

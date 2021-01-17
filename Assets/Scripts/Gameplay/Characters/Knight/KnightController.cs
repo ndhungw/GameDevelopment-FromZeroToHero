@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KnightControler : MonoBehaviour
+public class KnightController : MonoBehaviour
 {
     public LayerMask enemyLayer;
     public float DamageRange;
@@ -12,8 +12,6 @@ public class KnightControler : MonoBehaviour
     private float delayTimer = 0.0f;
 
     //Attack related
-    float nextAttackTime = 0f;
-    bool canAttack = true;
     bool isAttacking = false;
 
     Animator animator;
@@ -49,8 +47,14 @@ public class KnightControler : MonoBehaviour
                 foreach (var result in circleCastResults)
                 {
                     Collider2D attacked = result.collider;
-
                     //to be filled in
+                    EnemyScript script = attacked.GetComponent<EnemyScript>();
+
+                    // change health and knocked back
+                    if (script != null)
+                    {
+                        script.ChangeHealth(-50);
+                    }
                 }
             }
         }

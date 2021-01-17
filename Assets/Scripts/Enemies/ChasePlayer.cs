@@ -11,7 +11,7 @@ public class ChasePlayer : MonoBehaviour
 
     public float ChasingSpeed;
 
-    Rigidbody2D rigidbody2D;
+    new Rigidbody2D rigidbody2D;
 
     Animator animator;
 
