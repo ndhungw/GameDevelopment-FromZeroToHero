@@ -166,93 +166,92 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CreatePlayerDamageText(long damage, GameObject enemy)
+    
+
+    private void CharacterSwitchMechanics()
     {
-        GameObject playerDamage = Instantiate(playerDamageTextPrefab, new Vector3(enemy.GetComponent<Rigidbody2D>().position.x, enemy.GetComponent<Collider2D>().bounds.max.y, 0), new Quaternion());
-        playerDamage.transform.GetChild(0).GetComponent<TextMeshPro>().SetText(damage.ToString());
-    }
-    public void CreateEnemyDamageText(long damage, GameObject player)
-    {
-        GameObject enemyDamage = Instantiate(enemyDamageTextPrefab, new Vector3(player.GetComponent<Rigidbody2D>().position.x, player.GetComponent<Collider2D>().bounds.max.y, 0), new Quaternion());
-        enemyDamage.transform.GetChild(0).GetComponent<TextMeshPro>().SetText(damage.ToString());
+        if (currentPlayer.HasValue && playerFormation.ContainsKey(currentPlayer.Value) && playerFormation[currentPlayer.Value] != null)
+        {
+            //Check current player dead
+            GameObject player = characterInventory[playerFormation[currentPlayer.Value].Value].Item1;
+
+            CharacterScript characterScript = player.GetComponent<CharacterScript>();
+
+            if (!characterScript || characterScript.isCharacterActuallyDead())
+            {
+                // He's dead
+                Vector3 currentPosition = player.transform.position;
+                Vector3 currentLocalScale = player.transform.localScale;
+
+                int? newPlayer = null;
+                foreach (var item in playerFormation)
+                {
+                    if (item.Key != currentPlayer.Value)
+                    {
+                        GameObject newChar = item.Value.HasValue ? characterInventory[item.Value.Value].Item1 : null;
+                        if (newChar)
+                        {
+                            // If slot have character and character is already deployed more than 1 during game cycle
+                            // (appeared on screen more than 1 time), we check if character is dead or not before allow switch
+                            CharacterScript newCharScript = newChar.GetComponent<CharacterScript>();
+
+                            if (newCharScript && !newCharScript.isCharacterActuallyDead())
+                            {
+                                newPlayer = item.Key;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            // If slot have character but character never deployed on screen (although still in formation)
+                            // we allow switch right away
+                            if (item.Value.HasValue)
+                            {
+                                newPlayer = item.Key;
+                            }
+                        }
+                    }
+                }
+                if (newPlayer.HasValue)
+                {
+                    int? playerIdInInventory = null;
+                    if (playerFormation.ContainsKey(newPlayer.Value))
+                    {
+                        playerIdInInventory = playerFormation[newPlayer.Value];
+                    }
+                    spawnPlayerNumber(newPlayer.Value, currentPosition, currentLocalScale, playerIdInInventory);
+                    characterSwitchTimer = characterSwitchCooldown;
+                }
+                else
+                {
+                    Debug.Log("Everyone is dead");
+                    currentPlayer = newPlayer;
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            // only change character if there is a slot and that slot has a character assigned
+            if (playerFormation.ContainsKey(0) && playerFormation[0].HasValue)
+            {
+                doChangeCharacter(0, playerFormation[0]);
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            // only change character if there is a slot and that slot has a character assigned
+            if (playerFormation.ContainsKey(1) && playerFormation[1].HasValue)
+            {
+                doChangeCharacter(1, playerFormation[1]);
+            }
+        }
     }
 
     private void Update()
     {
+
         if (characterSwitchTimer <= 0) {
-            if(currentPlayer.HasValue && playerFormation.ContainsKey(currentPlayer.Value) && playerFormation[currentPlayer.Value] != null)
-            {
-                //Check current player dead
-                GameObject player = characterInventory[playerFormation[currentPlayer.Value].Value].Item1;
-
-                CharacterScript characterScript = player.GetComponent<CharacterScript>();
-
-                if(!characterScript || characterScript.isCharacterActuallyDead())
-                {
-                    // He's dead
-                    Vector3 currentPosition = player.transform.position;
-                    Vector3 currentLocalScale = player.transform.localScale;
-
-                    int? newPlayer = null;
-                    foreach(var item in playerFormation)
-                    {
-                        if(item.Key != currentPlayer.Value)
-                        {
-                            GameObject newChar = item.Value.HasValue ? characterInventory[item.Value.Value].Item1 : null;
-                            if (newChar)
-                            {
-                                // If slot have character and character is already deployed more than 1 during game cycle
-                                // (appeared on screen more than 1 time), we check if character is dead or not before allow switch
-                                CharacterScript newCharScript = newChar.GetComponent<CharacterScript>();
-
-                                if (newCharScript && !newCharScript.isCharacterActuallyDead())
-                                {
-                                    newPlayer = item.Key;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                // If slot have character but character never deployed on screen (although still in formation)
-                                // we allow switch right away
-                                if (item.Value.HasValue)
-                                {
-                                    newPlayer = item.Key;
-                                }
-                            }
-                        }
-                    }
-                    if (newPlayer.HasValue)
-                    {
-                        int? playerIdInInventory = null;
-                        if(playerFormation.ContainsKey(newPlayer.Value))
-                        {
-                            playerIdInInventory = playerFormation[newPlayer.Value];
-                        }
-                        spawnPlayerNumber(newPlayer.Value, currentPosition, currentLocalScale, playerIdInInventory);
-                        characterSwitchTimer = characterSwitchCooldown;
-                    }
-                    else
-                    {
-                        Debug.Log("Everyone is dead");
-                        currentPlayer = newPlayer;
-                    }
-                }
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                // only change character if there is a slot and that slot has a character assigned
-                if (playerFormation.ContainsKey(0) && playerFormation[0].HasValue) {
-                    doChangeCharacter(0, playerFormation[0]);
-                }
-            } else if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                // only change character if there is a slot and that slot has a character assigned
-                if (playerFormation.ContainsKey(1) && playerFormation[1].HasValue)
-                {
-                    doChangeCharacter(1, playerFormation[1]);
-                }
-            }          
+            CharacterSwitchMechanics();
         }
         else
         {
@@ -304,5 +303,16 @@ public class GameManager : MonoBehaviour
     public GameObject getCooldownClockPrefab()
     {
         return cooldownClock;
+    }
+
+    public void CreatePlayerDamageText(long damage, GameObject enemy)
+    {
+        GameObject playerDamage = Instantiate(playerDamageTextPrefab, new Vector3(enemy.GetComponent<Rigidbody2D>().position.x, enemy.GetComponent<Collider2D>().bounds.max.y, 0), new Quaternion());
+        playerDamage.transform.GetChild(0).GetComponent<TextMeshPro>().SetText(damage.ToString());
+    }
+    public void CreateEnemyDamageText(long damage, GameObject player)
+    {
+        GameObject enemyDamage = Instantiate(enemyDamageTextPrefab, new Vector3(player.GetComponent<Rigidbody2D>().position.x, player.GetComponent<Collider2D>().bounds.max.y, 0), new Quaternion());
+        enemyDamage.transform.GetChild(0).GetComponent<TextMeshPro>().SetText(damage.ToString());
     }
 }
