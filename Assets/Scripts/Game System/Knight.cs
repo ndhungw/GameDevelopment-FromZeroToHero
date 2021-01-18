@@ -9,13 +9,15 @@ namespace Assets.Scripts.Game_System
     public class Knight : GameCharacter
     {
         public float timeBetweenSwings { get; protected set; }
+        public float defenseAgainstAttack { get; protected set; }
         public Knight()
         {
             Speed = 18;
-            JumpSpeed = 45;
+            JumpSpeed = 40;
             MaxHealth = 100;
             BaseDamage = 50;
             timeBetweenSwings = 1.0f;
+            defenseAgainstAttack = 0.2f;
         }
     }
 }

@@ -25,7 +25,10 @@ public class WizardScript : CharacterScript
     {
         if (isHit)
         {
-            canAttack = true;
+            if (!canAttack)
+            {
+                canAttack = true;
+            }
         }
         if (delayTimer > 0)
         {

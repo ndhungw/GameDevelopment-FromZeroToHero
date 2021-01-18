@@ -14,13 +14,13 @@ namespace Assets.Scripts.Game_System
 
         public Wizard()
         {
-            Speed = 22;
+            Speed = 15;
             JumpSpeed = 45;
             MaxHealth = 40;
-            BaseDamage = 25;
-            Cast01SkillDuration = 2.5f;
-            Cast01SkillMultiplier = 0.6f;
-            Cast01SkillCooldown = 8.0f;
+            BaseDamage = 20;
+            Cast01SkillDuration = 3.5f;
+            Cast01SkillMultiplier = 1.05f;
+            Cast01SkillCooldown = 7.5f;
         }
     }
 }

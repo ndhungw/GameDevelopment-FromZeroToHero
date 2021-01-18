@@ -19,14 +19,15 @@ public class GameManager : MonoBehaviour
     private GameObject cooldownClock;
 
     // Constssssssssss
-    private const float characterSwitchCooldown = 2.0f;
+    private const float characterSwitchCooldown = 1.5f;
 
     private float characterSwitchTimer = 0.0f; 
 
     public enum CHARACTERS
     {
         KNIGHT,
-        WIZARD
+        WIZARD,
+        ARCHER
     }
 
     // Numbers for the game
@@ -53,6 +54,7 @@ public class GameManager : MonoBehaviour
         //We add in numbers, the order have to be exactly the same as the character prefabs list
         numbersForCharacters.Add(CHARACTERS.KNIGHT, new Knight());
         numbersForCharacters.Add(CHARACTERS.WIZARD, new Wizard());
+        numbersForCharacters.Add(CHARACTERS.ARCHER, new Archer());
 
         // Lets say player have all characters in inventory, so we add all characters to inventory for easy initialization
         // null means the character have not been instantiated yet, when instantiating in spawnNewPlayer, we provide info to new gameobj later
@@ -139,6 +141,7 @@ public class GameManager : MonoBehaviour
         }
         var cinemachineCamera = GameObject.FindGameObjectWithTag("CinemachineCamera");
         if (cinemachineCamera) {
+           
             var cinemachineCameraScript = cinemachineCamera.GetComponent<CinemachineCameraScript>();
             if (cinemachineCameraScript)
             {
@@ -249,13 +252,18 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-
-        if (characterSwitchTimer <= 0) {
-            CharacterSwitchMechanics();
-        }
-        else
+        // spawn point prefabs only get dragged in in game level scenes not the UIs scenes, so when a game level ends, 
+        // a spawn point destroy itself and it will automatically updates the game manager to remove itself => character not spawning on UI Scenes
+        if (spawnPoint)
         {
-            characterSwitchTimer -= Time.deltaTime;
+            if (characterSwitchTimer <= 0)
+            {
+                CharacterSwitchMechanics();
+            }
+            else
+            {
+                characterSwitchTimer -= Time.deltaTime;
+            }
         }
     }
 

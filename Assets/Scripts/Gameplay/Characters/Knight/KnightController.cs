@@ -11,6 +11,7 @@ public class KnightController : CharacterScript
     private int BaseDamage = 50;
 
     private float delayBetweenAttacks = 1.0f;
+    private float defenseAgainstAttacks;
     private float delayTimer = 0.0f;
     private bool canAttack = true;
 
@@ -26,6 +27,7 @@ public class KnightController : CharacterScript
         MaxHealth = characterStats.MaxHealth;
         BaseDamage = characterStats.BaseDamage;
         delayBetweenAttacks = characterStats.timeBetweenSwings;
+        defenseAgainstAttacks = characterStats.defenseAgainstAttack;
         currentHealth = MaxHealth;
     }
 
@@ -33,8 +35,14 @@ public class KnightController : CharacterScript
     {
         if (isHit)
         {
-            canAttack = true;
-            isAttacking = false;
+            if (!canAttack)
+            {
+                canAttack = true;
+            }
+            if (isAttacking)
+            {
+                isAttacking = false;
+            }
         }
         if (delayTimer > 0)
         {
@@ -69,6 +77,16 @@ public class KnightController : CharacterScript
                 }
             }
         }
+    }
+
+    protected override int calculateDamage(int amount)
+    {
+        var random = Random.Range(0, 2);
+        if (random == 0)
+        {
+            amount = Mathf.RoundToInt(amount * (1.0f - defenseAgainstAttacks));
+        }
+        return amount;
     }
 
     private void Attack()

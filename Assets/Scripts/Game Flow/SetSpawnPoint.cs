@@ -9,4 +9,9 @@ public class SetSpawnPoint : MonoBehaviour
     {
         GameManager.GM.spawnPoint = gameObject.transform;
     }
+
+    private void OnDestroy()
+    {
+        GameManager.GM.spawnPoint = null;
+    }
 }

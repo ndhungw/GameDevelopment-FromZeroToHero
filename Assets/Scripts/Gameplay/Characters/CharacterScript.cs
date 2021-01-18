@@ -102,6 +102,7 @@ public class CharacterScript : MonoBehaviour
 
     public void ChangeHealth(int amount)
     {
+        int changeAmount = 0;
         if (amount < 0)
         {
             if (isInvincible || isIFraming)
@@ -110,7 +111,8 @@ public class CharacterScript : MonoBehaviour
             }
             isHit = true;
             animator.SetTrigger("hit");
-            GameManager.GM?.CreateEnemyDamageText(Mathf.Abs(amount), gameObject);
+            changeAmount = calculateDamage(amount);
+            GameManager.GM?.CreateEnemyDamageText(Mathf.Abs(changeAmount), gameObject);
 
             isInvincible = true;
             invincibleTimer = InvincibleTime;
@@ -120,13 +122,18 @@ public class CharacterScript : MonoBehaviour
             rigidbody2d.velocity = new Vector2(0.0f, rigidbody2d.velocity.y);
         }
 
-        currentHealth = Mathf.Clamp(currentHealth + amount, 0, MaxHealth);
+        currentHealth = Mathf.Clamp(currentHealth + changeAmount, 0, MaxHealth);
 
         if (currentHealth <= 0)
         {
             isInvincible = true;
             animator.SetTrigger("dead");
         }
+    }
+
+    protected virtual int calculateDamage(int amount)
+    {
+        return amount;
     }
 
     private void hitAnimationEnd()
