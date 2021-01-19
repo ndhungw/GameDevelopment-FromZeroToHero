@@ -17,6 +17,7 @@ namespace Assets.Scripts.Game_System
             Speed = 15;
             JumpSpeed = 45;
             MaxHealth = 40;
+            CurrentHealth = MaxHealth;
             BaseDamage = 20;
             Cast01SkillDuration = 3.5f;
             Cast01SkillMultiplier = 1.05f;
@@ -24,6 +25,7 @@ namespace Assets.Scripts.Game_System
 
             WeaponName = "Elder Staff";
             CharacterName = "Wizard";
+            WeaponLevel = 1;
         }
     }
 }

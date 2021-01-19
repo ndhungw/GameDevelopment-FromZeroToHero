@@ -56,10 +56,9 @@ public class GameplayManager : MonoBehaviour
         numbersForCharacters = new Dictionary<CHARACTERS, GameCharacter>();
 
         //We add in numbers, the order have to be exactly the same as the character prefabs list
-        // we will replace new operator when gameinfomanager is done and I can take values from it
-        numbersForCharacters.Add(CHARACTERS.KNIGHT, new Knight());
-        numbersForCharacters.Add(CHARACTERS.WIZARD, new Wizard());
-        numbersForCharacters.Add(CHARACTERS.ARCHER, new Archer());
+        numbersForCharacters.Add(CHARACTERS.KNIGHT, GameInfoManager.knight);
+        numbersForCharacters.Add(CHARACTERS.WIZARD, GameInfoManager.wizard);
+        numbersForCharacters.Add(CHARACTERS.ARCHER, GameInfoManager.archer);
 
         // Lets say player have all characters in inventory, so we add all characters to inventory for easy initialization
         // null means the character have not been instantiated yet, when instantiating in spawnNewPlayer, we provide info to new gameobj later

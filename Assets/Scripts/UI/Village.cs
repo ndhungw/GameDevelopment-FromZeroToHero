@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class Village : MonoBehaviour
 {
+
+    public static Village instance = null;
     public int FoodCost = 100;
 
     public int foodPerMan = 6;
@@ -16,6 +18,16 @@ public class Village : MonoBehaviour
     void Awake()
     {
         //FoodText.text = gameInfoManager.Food.ToString();
+
+        if (instance != null)
+        {
+            GameObject.Destroy(instance);
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
 
         
     }
@@ -36,4 +48,6 @@ public class Village : MonoBehaviour
             GameInfoManager.ChangeFood(foodPerMan);
         }
     }
+
+    
 }
