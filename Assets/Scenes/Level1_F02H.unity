@@ -11825,10 +11825,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2767333965339399645, guid: 70d042cd5c2ad7d45964e2271aa5e5fc, type: 3}
-      propertyPath: StaggerTime
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 6473839339794495409, guid: 70d042cd5c2ad7d45964e2271aa5e5fc, type: 3}
       propertyPath: m_Name
       value: Ghost
