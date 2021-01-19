@@ -24,8 +24,13 @@ public class HealthBar : MonoBehaviour
         originalSize = Mask.rectTransform.rect.width;
     }
 
-    public void SetValue(float value)
+    public void SetValue(int currentHealth, int maxHealth)
     {
-        Mask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, originalSize * value);
+        Mask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, originalSize * (currentHealth/ (float)maxHealth));
+    }
+
+    public void SetAvatar(Sprite avatar)
+    {
+        Avatar.sprite = avatar;
     }
 }

@@ -112,11 +112,15 @@ public class GameplayManager : MonoBehaviour
         // First time initialization
         if (playerFormation.ContainsKey(number) && playerFormation[number].HasValue && !characterInventory[playerFormation[number].Value].Item1)
         {
-            
             var character = characterInventory[playerIdInInventory.Value];
             
             GameObject newPlayer = Instantiate(playerPrefabs[character.Item2], position, new Quaternion());
             player = newPlayer;
+            CharacterScript script = player.GetComponent<CharacterScript>();
+            if (!script)
+            {
+                return false;
+            }
             currentPlayer = number;
             // Change the record in inventory with new obj instantiated
             characterInventory[playerIdInInventory.Value] = new Tuple<GameObject, int>(newPlayer, character.Item2);
@@ -144,6 +148,12 @@ public class GameplayManager : MonoBehaviour
         {
             player.transform.localScale = transformScale.Value;
         }
+
+        //On new spawn character set new image and avatar
+        CharacterScript newPlayerScript = player.GetComponent<CharacterScript>();
+        HealthBar.instance.SetValue(newPlayerScript.GetHealth(), newPlayerScript.GetMaxHealth());
+        HealthBar.instance.SetAvatar(newPlayerScript.avatarSprite);
+
         var cinemachineCamera = GameObject.FindGameObjectWithTag("CinemachineCamera");
         if (cinemachineCamera) {
             

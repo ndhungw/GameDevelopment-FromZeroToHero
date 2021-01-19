@@ -200,6 +200,6 @@ MonoBehaviour:
     m_Bits: 256
   feet: {fileID: 1170528881616037962}
   RaycastDistanceFromFeet: 2
+  avatarSprite: {fileID: 21300000, guid: e7d324f1cb8850549817d8b2d18194de, type: 3}
   InvincibleTime: 2
   state: 0
-  arrowProjectile: {fileID: 3650260052534492259, guid: b52341c6d410a444bbc5427431f41f63, type: 3}

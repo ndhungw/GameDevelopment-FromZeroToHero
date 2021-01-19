@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterScript : MonoBehaviour
 {
@@ -123,6 +124,8 @@ public class CharacterScript : MonoBehaviour
         }
 
         currentHealth = Mathf.Clamp(currentHealth + changeAmount, 0, MaxHealth);
+
+        HealthBar.instance.SetValue(currentHealth, MaxHealth);
 
         if (currentHealth <= 0)
         {
@@ -300,5 +303,10 @@ public class CharacterScript : MonoBehaviour
     public bool isCharacterActuallyDead()
     {
         return isActuallyDead;
+    }
+
+    public int GetMaxHealth()
+    {
+        return MaxHealth;
     }
 }

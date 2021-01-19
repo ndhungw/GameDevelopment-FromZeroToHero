@@ -201,6 +201,7 @@ MonoBehaviour:
     m_Bits: 256
   feet: {fileID: 1422577015029867432}
   RaycastDistanceFromFeet: 2
+  avatarSprite: {fileID: 21300000, guid: d5ccce9b46cdf4e42880b344ad059742, type: 3}
   InvincibleTime: 2
   state: 0
   CastCircle01Skill: {fileID: 1540135725827843380, guid: bc20d5a57718bfc4a8fd0eeeb86f4a5f, type: 3}
