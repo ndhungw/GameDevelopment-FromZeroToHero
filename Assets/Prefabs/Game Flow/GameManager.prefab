@@ -48,4 +48,6 @@ MonoBehaviour:
   playerPrefabs:
   - {fileID: 1224242153796852531, guid: 142f452247d8b674da76b87ff4c3c2e2, type: 3}
   - {fileID: 1422577016446716405, guid: 17751b9ed9aa4c846be70feecccd4239, type: 3}
+  - {fileID: 1170528881691692094, guid: 892db6d68451de540894c07404b88425, type: 3}
+  cooldownClock: {fileID: 0}
   spawnPoint: {fileID: 0}

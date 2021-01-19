@@ -50,7 +50,7 @@ public class KnightController : CharacterScript
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0) && canAttack)
+            if (Input.GetKeyDown(KeyCode.Mouse0) && canAttack && CheckIsGrounded())
             {
                 Attack();     
             }

@@ -211,6 +211,7 @@ public class GameManager : MonoBehaviour
                             if (item.Value.HasValue)
                             {
                                 newPlayer = item.Key;
+                                break;
                             }
                         }
                     }
@@ -246,6 +247,13 @@ public class GameManager : MonoBehaviour
             if (playerFormation.ContainsKey(1) && playerFormation[1].HasValue)
             {
                 doChangeCharacter(1, playerFormation[1]);
+            }
+        }else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            // only change character if there is a slot and that slot has a character assigned
+            if (playerFormation.ContainsKey(2) && playerFormation[2].HasValue)
+            {
+                doChangeCharacter(2, playerFormation[2]);
             }
         }
     }

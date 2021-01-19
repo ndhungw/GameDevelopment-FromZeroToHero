@@ -156,7 +156,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 0
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &1170528881691692083
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -202,3 +202,4 @@ MonoBehaviour:
   RaycastDistanceFromFeet: 2
   InvincibleTime: 2
   state: 0
+  arrowProjectile: {fileID: 3650260052534492259, guid: b52341c6d410a444bbc5427431f41f63, type: 3}

@@ -20,7 +20,7 @@ namespace Assets.Scripts.Game_System
             BaseDamage = 20;
             Cast01SkillDuration = 3.5f;
             Cast01SkillMultiplier = 1.05f;
-            Cast01SkillCooldown = 7.5f;
+            Cast01SkillCooldown = 7f;
         }
     }
 }

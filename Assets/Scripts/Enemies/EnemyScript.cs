@@ -73,10 +73,6 @@ public class EnemyScript : MonoBehaviour
                 isInvincible = false;
             }
         }
-        if (Input.GetKey(KeyCode.E))
-        {
-            ChangeHealth(-MaxHealth);
-        }
     }
 
     void FixedUpdate()

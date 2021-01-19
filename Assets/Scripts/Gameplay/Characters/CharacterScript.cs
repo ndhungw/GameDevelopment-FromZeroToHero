@@ -7,6 +7,7 @@ public class CharacterScript : MonoBehaviour
     public Transform feet;
     //How many screen unit to cast the ray
     public float RaycastDistanceFromFeet = 2f;
+    public Sprite avatarSprite;
 
     protected int currentHealth = 100;
     protected float speed = 3.0f;
@@ -83,7 +84,6 @@ public class CharacterScript : MonoBehaviour
             if (isGrounded)
             {
                 state = State.IDLE;
-                canJump = true;
             }
         }
         else if (!isGrounded && rigidbody2d.velocity.y < -speed)
@@ -174,6 +174,13 @@ public class CharacterScript : MonoBehaviour
 
         bool isGrounded = CheckIsGrounded();
 
+
+        //Fixed too much jump with this if condition
+        if(isGrounded && !Input.GetKey(KeyCode.Space) && !canJump)
+        {
+            canJump = true;
+        }
+
         // we skip input checking + input validation if character is staggering
         if (!isStaggered && currentHealth > 0)
         {
@@ -195,7 +202,7 @@ public class CharacterScript : MonoBehaviour
                     rigidbody2d.velocity = new Vector2(-speed, rigidbody2d.velocity.y);
                 }
             }
-            if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(KeyCode.D))
             {
                 transform.localScale = new Vector2(1, 1);
                 // Onground - our rule
@@ -263,7 +270,7 @@ public class CharacterScript : MonoBehaviour
         }
     }
 
-    bool CheckIsGrounded()
+    protected bool CheckIsGrounded()
     {
         RaycastHit2D hit = Physics2D.Raycast(feet.position, Vector2.down, RaycastDistanceFromFeet, ground);
         return hit && collider.IsTouchingLayers(ground);
