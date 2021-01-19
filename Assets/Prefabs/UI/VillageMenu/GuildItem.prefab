@@ -329,7 +329,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6835835874817912733
 RectTransform:
   m_ObjectHideFlags: 0
@@ -542,7 +542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1200648923588709005
 RectTransform:
   m_ObjectHideFlags: 0
@@ -676,7 +676,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7165396186161487365
 RectTransform:
   m_ObjectHideFlags: 0
@@ -961,6 +961,10 @@ PrefabInstance:
     - target: {fileID: 832567744527052512, guid: 8cd26914a1ec66e40947c3ca7db2523d, type: 3}
       propertyPath: m_Name
       value: Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 832567744527052512, guid: 8cd26914a1ec66e40947c3ca7db2523d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 832567744527052513, guid: 8cd26914a1ec66e40947c3ca7db2523d, type: 3}
       propertyPath: m_Pivot.x
