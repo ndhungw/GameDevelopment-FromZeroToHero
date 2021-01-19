@@ -18,17 +18,24 @@ public class KnightController : CharacterScript
     //Attack related
     bool isAttacking = false;
 
-    private new void Start()
+    private new void OnEnable()
     {
-        base.Start();
-        Knight characterStats = (Knight) GameplayManager.GM.numbersForCharacters[GameplayManager.CHARACTERS.KNIGHT];
+        base.OnEnable();
+        Knight characterStats = GameInfoManager.knight;
         speed = characterStats.Speed;
         jumpSpeed = characterStats.JumpSpeed;
         MaxHealth = characterStats.MaxHealth;
         BaseDamage = characterStats.BaseDamage;
         delayBetweenAttacks = characterStats.timeBetweenSwings;
         defenseAgainstAttacks = characterStats.defenseAgainstAttack;
-        currentHealth = MaxHealth;
+        currentHealth = characterStats.CurrentHealth;
+        HealthBar.instance.SetValue(currentHealth, MaxHealth);
+        HealthBar.instance.SetAvatar(avatarSprite);
+    }
+
+    protected override void SetCurrentHealthToGameInfoManager()
+    {
+        GameInfoManager.knight.SetCurrentHealth(currentHealth);
     }
 
     private void Update()

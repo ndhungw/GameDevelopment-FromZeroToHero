@@ -25,19 +25,14 @@ public class GameplayManager : MonoBehaviour
     private float characterSwitchTimer = 0.0f;
     private bool spawnedPlayer = false;
 
-    public enum CHARACTERS
-    {
-        KNIGHT,
-        WIZARD,
-        ARCHER
-    }
-
-    // Numbers for the game
-    public Dictionary<CHARACTERS, GameCharacter> numbersForCharacters { get; private set; }
+    // int is the slot, 
+    // this array have to have to same type order as the prefab array
+    Dictionary<int, Type> characterInfos;
 
     public Transform spawnPoint;
     private int? currentPlayer;
-    // characters in inventory (gameobject = character values like currentHealth,... ; int the position of the character type in prefab list)
+    // characters in inventory (gameobject = character values like currentHealth,... ; int the position of the character type in prefab list,
+    // this prefab list order is also the same order for the type dictionary)
     private List<Tuple<GameObject, int>> characterInventory;
     // int here is the position of the character in formation, gameobject is the corresponding character id
     private Dictionary<int, int?> playerFormation;
@@ -50,19 +45,19 @@ public class GameplayManager : MonoBehaviour
             GM = gameplayManagerObj.GetComponent<GameplayManager>();
             DontDestroyOnLoad(gameplayManagerObj);
         }
-        
+
+        characterInfos = new Dictionary<int, Type>();
         characterInventory = new List<Tuple<GameObject, int>>();
         playerFormation = new Dictionary<int, int?>();
-        numbersForCharacters = new Dictionary<CHARACTERS, GameCharacter>();
 
-        //We add in numbers, the order have to be exactly the same as the character prefabs list
-        numbersForCharacters.Add(CHARACTERS.KNIGHT, GameInfoManager.knight);
-        numbersForCharacters.Add(CHARACTERS.WIZARD, GameInfoManager.wizard);
-        numbersForCharacters.Add(CHARACTERS.ARCHER, GameInfoManager.archer);
+        //Add in types relating to the prefabs
+        characterInfos.Add(0, typeof(Knight));
+        characterInfos.Add(1, typeof(Wizard));
+        characterInfos.Add(2, typeof(Archer));
 
         // Lets say player have all characters in inventory, so we add all characters to inventory for easy initialization
         // null means the character have not been instantiated yet, when instantiating in spawnNewPlayer, we provide info to new gameobj later
-        for(int i = 0; i < playerPrefabs.Count; i++)
+        for (int i = 0; i < characterInfos.Count; i++)
         {
             characterInventory.Add(new Tuple<GameObject, int>(null, i));
         }
@@ -147,11 +142,6 @@ public class GameplayManager : MonoBehaviour
         {
             player.transform.localScale = transformScale.Value;
         }
-
-        //On new spawn character set new image and avatar
-        CharacterScript newPlayerScript = player.GetComponent<CharacterScript>();
-        HealthBar.instance.SetValue(newPlayerScript.GetHealth(), newPlayerScript.GetMaxHealth());
-        HealthBar.instance.SetAvatar(newPlayerScript.avatarSprite);
 
         var cinemachineCamera = GameObject.FindGameObjectWithTag("CinemachineCamera");
         if (cinemachineCamera) {
@@ -284,14 +274,117 @@ public class GameplayManager : MonoBehaviour
         {
             if (!spawnedPlayer)
             {
-                // this part is important, we have to connect to game info manager to get currentPlayer's health first
-                // if current player health  
                 if (currentPlayer.HasValue)
                 {
-                    bool spawnResult = spawnPlayerNumber(currentPlayer.Value, spawnPoint.position, null, playerFormation[currentPlayer.Value]);
-                    if (spawnResult)
+                    var characterPosInInventory = playerFormation[currentPlayer.Value];
+                    // if we cant find any record relating currentplayer to a character in inventory, we find a new current player
+                    if (!characterPosInInventory.HasValue || characterPosInInventory.Value < 0 || characterPosInInventory >= characterInventory.Count)
                     {
-                        spawnedPlayer = true;
+                        if (characterPosInInventory.Value < 0 || characterPosInInventory >= characterInventory.Count)
+                        {
+                            playerFormation[currentPlayer.Value] = null;
+                        }
+                        int? newCurrentPlayer = null;
+                        foreach (var item in playerFormation)
+                        {
+                            if (item.Key != currentPlayer.Value && item.Value.HasValue)
+                            {
+                                newCurrentPlayer = item.Value;
+                                break;
+                            }
+                        }
+                        currentPlayer = newCurrentPlayer;
+                        //Found no new currentplayer, party is empty!!!
+                        if (currentPlayer == null)
+                        {
+                            Debug.Log("Your party is empty");
+                        }
+                    }
+                    // this part is important, we have to connect to game info manager to get currentPlayer's health first
+                    // if current player health is lower than 0, we change
+                    else
+                    {
+                        var trueCharacter = characterInventory[characterPosInInventory.Value];
+                        Type characterType = characterInfos[trueCharacter.Item2];
+                        GameCharacter currentCharInfo = null;
+                        if(characterType == typeof(Knight))
+                        {
+                            currentCharInfo = GameInfoManager.knight;
+                        }else if (characterType == typeof(Wizard))
+                        {
+                            currentCharInfo = GameInfoManager.wizard;
+                        }else if (characterType == typeof(Archer)){
+                            currentCharInfo = GameInfoManager.archer;
+                        }
+
+                        // No char info of such type
+                        if (currentCharInfo == null)
+                        {
+                            // Remove char from inventory and set formation ref of that char to null
+                            characterInventory.Remove(characterInventory[characterPosInInventory.Value]);
+                            playerFormation[currentPlayer.Value] = null;
+                        }
+                        else
+                        {
+                            //Check the health of the char
+                            if (currentCharInfo.CurrentHealth <= 0)
+                            {
+                                int? replace = null;
+                                foreach (var item in playerFormation)
+                                {
+                                    if (item.Key != currentPlayer.Value && item.Value.HasValue)
+                                    {
+                                        // Find replacement character for this one in the formation
+                                        var replacementCharacter = characterInventory[item.Value.Value];
+                                        Type replaceCharType = characterInfos[replacementCharacter.Item2];
+                                        GameCharacter replaceCharInfo = null;
+                                        if (replaceCharType == typeof(Knight))
+                                        {
+                                            replaceCharInfo = GameInfoManager.knight;
+                                        }
+                                        else if (replaceCharType == typeof(Wizard))
+                                        {
+                                            replaceCharInfo = GameInfoManager.wizard;
+                                        }
+                                        else if (replaceCharType == typeof(Archer))
+                                        {
+                                            replaceCharInfo = GameInfoManager.archer;
+                                        }
+
+                                        // Replace char have no info, this is an error
+                                        if(replaceCharInfo == null)
+                                        {
+                                            // Remove char from inventory and set formation ref of that char to null
+                                            characterInventory.Remove(characterInventory[item.Value.Value]);
+                                            playerFormation[item.Key] = null;
+                                        }
+                                        else
+                                        {
+                                            if (replaceCharInfo.CurrentHealth > 0)
+                                            {
+                                                replace = item.Key;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                currentPlayer = replace;
+                                //Found no new currentplayer, party have no suitable replacement, they are all dead!!!
+                                if (currentPlayer == null)
+                                {
+                                    Debug.Log("Your party is all dead before going in this room");
+                                }
+                            }
+                            else
+                            {
+                                //Spawn 
+                                bool spawnResult = spawnPlayerNumber(currentPlayer.Value, spawnPoint.position, null, playerFormation[currentPlayer.Value]);
+                                if (spawnResult)
+                                {
+                                    spawnedPlayer = true;
+                                }
+                            }  
+                        }
                     }
                 }
             }

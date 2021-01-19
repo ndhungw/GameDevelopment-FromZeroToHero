@@ -63,7 +63,7 @@ public class CharacterScript : MonoBehaviour
     }
 
     // Called before start and repeated on every reenabling attempt
-    private void OnEnable()
+    protected void OnEnable()
     {
         isInvincible = true;
         invincibleTimer = 0.5f;
@@ -127,11 +127,18 @@ public class CharacterScript : MonoBehaviour
 
         HealthBar.instance.SetValue(currentHealth, MaxHealth);
 
+        SetCurrentHealthToGameInfoManager();
+
         if (currentHealth <= 0)
         {
             isInvincible = true;
             animator.SetTrigger("dead");
         }
+    }
+
+    protected virtual void SetCurrentHealthToGameInfoManager()
+    {
+
     }
 
     protected virtual int calculateDamage(int amount)
@@ -258,6 +265,7 @@ public class CharacterScript : MonoBehaviour
             // Check if there is slope
             if (hit && Mathf.Abs(hit.normal.x) > 0.1f)
             {
+                Debug.Log("aaaaaa");
                 // We freeze position X of the rigidbody constraints and put x velocity to 0
                 // to stop the normal physics on slope, making object only movable from us setting velocity
                 rigidbody2d.constraints = RigidbodyConstraints2D.FreezePositionX;

@@ -5,9 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class IngameOverlay : MonoBehaviour
 {
-    bool isHidden = false;
-    bool sceneHasSpawnpoint = false;
-    
     private void Awake()
     {
         gameObject.SetActive(false);

@@ -8,17 +8,23 @@ public class ArcherController : CharacterScript
     private float delayTimer = 0.0f;
     private bool canAttack = true;
 
-    private new void Start()
+    private new void OnEnable()
     {
-        base.Start();
-        Archer characterStats = (Archer) GameplayManager.GM.numbersForCharacters[GameplayManager.CHARACTERS.ARCHER];
+        base.OnEnable();
+        Archer characterStats = GameInfoManager.archer;
         speed = characterStats.Speed;
         jumpSpeed = characterStats.JumpSpeed;
         MaxHealth = characterStats.MaxHealth;
         delayBetweenAttacks = characterStats.timeBetweenShots;
         shootArrowForce = characterStats.launchArrowForce;
+        currentHealth = characterStats.CurrentHealth;
+        HealthBar.instance.SetValue(currentHealth, MaxHealth);
+        HealthBar.instance.SetAvatar(avatarSprite);
+    }
 
-        currentHealth = MaxHealth;
+    protected override void SetCurrentHealthToGameInfoManager()
+    {
+        GameInfoManager.archer.SetCurrentHealth(currentHealth);
     }
 
     private void Update()
