@@ -23,6 +23,11 @@ public class EnemyScript : MonoBehaviour
     protected bool canAttack = true;
     protected bool isAttacking = false;
 
+    //Invincible related
+    public float InvincibleTime = 0.5f;
+    bool isInvincible = true;
+    float invincibleTimer;
+
     //getting hit related
     protected int currentHealth;
     
@@ -60,9 +65,13 @@ public class EnemyScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.E))
+        if (isInvincible)
         {
-            ChangeHealth(-MaxHealth);
+            invincibleTimer -= Time.deltaTime;
+            if (invincibleTimer < 0)
+            {
+                isInvincible = false;
+            }
         }
     }
 
@@ -138,8 +147,16 @@ public class EnemyScript : MonoBehaviour
     {
         if (amount < 0)
         {
-            animator.SetTrigger("hit");
+            if (isInvincible)
+            {
+                return;
+            }
 
+            animator.SetTrigger("hit");
+            GameplayManager.GM?.CreatePlayerDamageText(Mathf.Abs(amount), gameObject);
+
+            isInvincible = true;
+            invincibleTimer = InvincibleTime;
             isStaggered = true;
             staggerTimer = StaggerTime;
 

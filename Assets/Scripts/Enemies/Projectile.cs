@@ -29,7 +29,6 @@ public class Projectile : MonoBehaviour
 
     public void Launch(Vector2 lookDirection, int v)
     {
-        Debug.Log("Shot fired");
         rigidbody2d.AddForce(lookDirection * v);
     }
 

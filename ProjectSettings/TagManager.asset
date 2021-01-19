@@ -4,6 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - SpawnPoint
+  - CinemachineCamera
+  - GlobalObjectPool
   - ManaSprite
   - HealthSprite
   layers:
@@ -19,6 +22,8 @@ TagManager:
   - player
   - enemy
   - bullet
+  - playerskills
+  - playerprojectiles
   - background
   - 
   - 
