@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterScript : MonoBehaviour
 {
@@ -62,7 +63,7 @@ public class CharacterScript : MonoBehaviour
     }
 
     // Called before start and repeated on every reenabling attempt
-    private void OnEnable()
+    protected void OnEnable()
     {
         isInvincible = true;
         invincibleTimer = 0.5f;
@@ -124,6 +125,10 @@ public class CharacterScript : MonoBehaviour
 
         currentHealth = Mathf.Clamp(currentHealth + changeAmount, 0, MaxHealth);
 
+        HealthBar.instance.SetValue(currentHealth, MaxHealth);
+
+        SetCurrentHealthToGameInfoManager();
+
         if (currentHealth <= 0)
         {
             isInvincible = true;
@@ -131,14 +136,9 @@ public class CharacterScript : MonoBehaviour
         }
     }
 
-    public void setHealth(int amount)
+    protected virtual void SetCurrentHealthToGameInfoManager()
     {
-        currentHealth = amount;
-        if(currentHealth <= 0)
-        {
-            isInvincible = true;
-            isActuallyDead = true;
-        }
+
     }
 
     protected virtual int calculateDamage(int amount)
@@ -265,6 +265,7 @@ public class CharacterScript : MonoBehaviour
             // Check if there is slope
             if (hit && Mathf.Abs(hit.normal.x) > 0.1f)
             {
+                Debug.Log("aaaaaa");
                 // We freeze position X of the rigidbody constraints and put x velocity to 0
                 // to stop the normal physics on slope, making object only movable from us setting velocity
                 rigidbody2d.constraints = RigidbodyConstraints2D.FreezePositionX;
@@ -310,5 +311,10 @@ public class CharacterScript : MonoBehaviour
     public bool isCharacterActuallyDead()
     {
         return isActuallyDead;
+    }
+
+    public int GetMaxHealth()
+    {
+        return MaxHealth;
     }
 }

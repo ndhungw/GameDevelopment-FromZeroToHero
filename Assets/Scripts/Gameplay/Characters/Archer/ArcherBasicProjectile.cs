@@ -22,17 +22,13 @@ public class ArcherBasicProjectile : MonoBehaviour
         rigidBody2d = GetComponent<Rigidbody2D>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        Archer characterStats = (Archer)GameplayManager.GM.numbersForCharacters[GameplayManager.CHARACTERS.ARCHER];
+        Archer characterStats = GameInfoManager.archer;
         baseDamage = characterStats.BaseDamage;
         critRate = characterStats.critRate;
         critDamage = characterStats.critDamage;
         arrowRange = characterStats.arrowRange;
-    }
-
-    private void OnEnable()
-    {
         hasHittedEnemy = false;
     }
 

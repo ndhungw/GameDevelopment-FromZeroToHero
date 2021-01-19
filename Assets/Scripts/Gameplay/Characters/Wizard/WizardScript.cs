@@ -10,15 +10,17 @@ public class WizardScript : CharacterScript
     private float delayTimer = 0.0f;
     private bool canAttack = true;
 
-    private new void Start()
+    private new void OnEnable()
     {
-        base.Start();
-        Wizard characterStats = (Wizard)GameplayManager.GM.numbersForCharacters[GameplayManager.CHARACTERS.WIZARD];
+        base.OnEnable();
+        Wizard characterStats = GameInfoManager.wizard;
         speed = characterStats.Speed;
         jumpSpeed = characterStats.JumpSpeed;
         MaxHealth = characterStats.MaxHealth;
         delayBetweenAttacks = characterStats.Cast01SkillCooldown;
-        currentHealth = MaxHealth;
+        currentHealth = characterStats.CurrentHealth;
+        HealthBar.instance.SetValue(currentHealth, MaxHealth);
+        HealthBar.instance.SetAvatar(avatarSprite);
     }
 
     private void Update()
@@ -41,6 +43,11 @@ public class WizardScript : CharacterScript
                 Attack();
             }
         }
+    }
+
+    protected override void SetCurrentHealthToGameInfoManager()
+    {
+        GameInfoManager.wizard.SetCurrentHealth(currentHealth);
     }
 
     private void Attack()
