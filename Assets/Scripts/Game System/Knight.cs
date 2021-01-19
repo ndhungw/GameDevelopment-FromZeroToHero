@@ -18,6 +18,9 @@ namespace Assets.Scripts.Game_System
             BaseDamage = 50;
             timeBetweenSwings = 1.0f;
             defenseAgainstAttack = 0.2f;
+
+            CharacterName = "Knight";
+            WeaponName = "Long Sword";
         }
     }
 }

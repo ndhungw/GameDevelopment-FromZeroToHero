@@ -165,6 +165,8 @@ public class EnemyScript : MonoBehaviour
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, MaxHealth);
 
+        Debug.Log("current Health " + currentHealth);
+
         if (currentHealth <= 0)
         {
             animator.SetTrigger("dead");
