@@ -21,7 +21,7 @@ public class Projectile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.magnitude > 20.0f)
+        if (transform.position.magnitude > 1000.0f)
         {
             Destroy(gameObject);
         }
@@ -29,6 +29,7 @@ public class Projectile : MonoBehaviour
 
     public void Launch(Vector2 lookDirection, int v)
     {
+        Debug.Log("Shot fired");
         rigidbody2d.AddForce(lookDirection * v);
     }
 
