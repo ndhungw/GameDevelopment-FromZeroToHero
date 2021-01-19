@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameInfoManager
-{
+{ 
+
     public static Knight knight = new Knight();
 
     public static Archer archer = new Archer();

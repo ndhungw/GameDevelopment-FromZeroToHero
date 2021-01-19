@@ -18,6 +18,7 @@ namespace Assets.Scripts.Game_System
             Speed = 21;
             JumpSpeed = 50;
             MaxHealth = 60;
+            CurrentHealth = MaxHealth;
             BaseDamage = 35;
             timeBetweenShots = 0.5f;
             launchArrowForce = 300.0f;
@@ -27,6 +28,8 @@ namespace Assets.Scripts.Game_System
 
             CharacterName = "Archer";
             WeaponName = "Composite Bow";
+            WeaponLevel = 1;
+
         }
     }
 }
