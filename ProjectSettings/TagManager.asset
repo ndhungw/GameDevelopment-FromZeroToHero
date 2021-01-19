@@ -38,6 +38,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: clouds
+    uniqueID: 528762587
+    locked: 0
+  - name: towns
+    uniqueID: 977235839
+    locked: 0
+  - name: blocks
+    uniqueID: 1173408513
+    locked: 0
+  - name: ground
+    uniqueID: 1715707521
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
