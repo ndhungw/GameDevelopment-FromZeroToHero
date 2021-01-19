@@ -131,16 +131,6 @@ public class CharacterScript : MonoBehaviour
         }
     }
 
-    public void setHealth(int amount)
-    {
-        currentHealth = amount;
-        if(currentHealth <= 0)
-        {
-            isInvincible = true;
-            isActuallyDead = true;
-        }
-    }
-
     protected virtual int calculateDamage(int amount)
     {
         return amount;

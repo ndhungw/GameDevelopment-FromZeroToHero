@@ -68,8 +68,14 @@ public class GameplayManager : MonoBehaviour
             characterInventory.Add(new Tuple<GameObject, int>(null, i));
         }
 
+        // Set current player to the first in inventory
+        if (characterInventory.Count > 0)
+        {
+            currentPlayer = 0;
+        }
+
         //We add in formation slots, we now have 4 slots, for easy, we add the first 4 characters in our inventory 
-        for(int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             if(i < characterInventory.Count)
             {
@@ -106,6 +112,7 @@ public class GameplayManager : MonoBehaviour
         // First time initialization
         if (playerFormation.ContainsKey(number) && playerFormation[number].HasValue && !characterInventory[playerFormation[number].Value].Item1)
         {
+            
             var character = characterInventory[playerIdInInventory.Value];
             
             GameObject newPlayer = Instantiate(playerPrefabs[character.Item2], position, new Quaternion());
@@ -117,7 +124,8 @@ public class GameplayManager : MonoBehaviour
         }
         else
         {
-            if(!playerFormation.ContainsKey(number) || !playerFormation[number].HasValue)
+            
+            if (!playerFormation.ContainsKey(number) || !playerFormation[number].HasValue)
             {
                 return false;
             }
@@ -267,16 +275,16 @@ public class GameplayManager : MonoBehaviour
         {
             if (!spawnedPlayer)
             {
+                // this part is important, we have to connect to game info manager to get currentPlayer's health first
+                // if current player health  
                 if (currentPlayer.HasValue)
                 {
-                    spawnPlayerNumber(currentPlayer.Value, spawnPoint.position, null, playerFormation[currentPlayer.Value]); 
+                    bool spawnResult = spawnPlayerNumber(currentPlayer.Value, spawnPoint.position, null, playerFormation[currentPlayer.Value]);
+                    if (spawnResult)
+                    {
+                        spawnedPlayer = true;
+                    }
                 }
-                // if team have no current player we spawn into slot 1 the first character in inventory
-                else
-                {
-                    spawnPlayerNumber(0, spawnPoint.position, null, 0);
-                }
-                spawnedPlayer = true;
             }
             if (characterSwitchTimer <= 0)
             {
