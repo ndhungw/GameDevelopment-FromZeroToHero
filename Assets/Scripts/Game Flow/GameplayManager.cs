@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameplayManager : MonoBehaviour
 {
@@ -21,7 +22,8 @@ public class GameplayManager : MonoBehaviour
     // Constssssssssss
     private const float characterSwitchCooldown = 1.5f;
 
-    private float characterSwitchTimer = 0.0f; 
+    private float characterSwitchTimer = 0.0f;
+    private bool spawnedPlayer = false;
 
     public enum CHARACTERS
     {
@@ -44,7 +46,9 @@ public class GameplayManager : MonoBehaviour
     {
         if (GM == null)
         {
-            GM = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameplayManager>(); 
+            var gameplayManagerObj = GameObject.FindGameObjectWithTag("GameController");
+            GM = gameplayManagerObj.GetComponent<GameplayManager>();
+            DontDestroyOnLoad(gameplayManagerObj);
         }
         
         characterInventory = new List<Tuple<GameObject, int>>();
@@ -58,7 +62,7 @@ public class GameplayManager : MonoBehaviour
 
         // Lets say player have all characters in inventory, so we add all characters to inventory for easy initialization
         // null means the character have not been instantiated yet, when instantiating in spawnNewPlayer, we provide info to new gameobj later
-        for(int i= 0; i < playerPrefabs.Count; i++)
+        for(int i = 0; i < playerPrefabs.Count; i++)
         {
             characterInventory.Add(new Tuple<GameObject, int>(null, i));
         }
@@ -77,18 +81,22 @@ public class GameplayManager : MonoBehaviour
 
     private void Start()
     {
-        if (spawnPoint)
+        SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+        SceneManager.sceneUnloaded += SceneManager_sceneUnloaded;
+    }
+
+    private void SceneManager_sceneUnloaded(Scene arg0)
+    {
+        for (int i = 0; i < playerPrefabs.Count; i++)
         {
-            if (currentPlayer.HasValue)
-            {
-                bool spawnResult = spawnPlayerNumber(currentPlayer.Value, spawnPoint.position, null, null);
-            }
-            // if team have no current player we spawn into slot 1 the first character in inventory
-            else
-            {
-                bool spawnResult = spawnPlayerNumber(0, spawnPoint.position, null, 0);
-            }
+            characterInventory[i] = new Tuple<GameObject, int>(null, characterInventory[i].Item2);
         }
+    }
+
+    private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        spawnedPlayer = false;
+        spawnPoint = null;
     }
 
     private bool spawnPlayerNumber(int number, Vector3 position, Vector3? transformScale, int? playerIdInInventory)
@@ -97,25 +105,13 @@ public class GameplayManager : MonoBehaviour
         // First time initialization
         if (playerFormation.ContainsKey(number) && playerFormation[number].HasValue && !characterInventory[playerFormation[number].Value].Item1)
         {
-            if(!playerIdInInventory.HasValue || playerIdInInventory.Value >= characterInventory.Count)
-            {
-                return false;
-            }
-
             var character = characterInventory[playerIdInInventory.Value];
-            if (character.Item1) {
-                CharacterScript script = character.Item1.GetComponent<CharacterScript>();
-                if (!script || script.isCharacterActuallyDead())
-                {
-                    return false;
-                }
-            }
-
+            
             GameObject newPlayer = Instantiate(playerPrefabs[character.Item2], position, new Quaternion());
             player = newPlayer;
             currentPlayer = number;
             // Change the record in inventory with new obj instantiated
-            characterInventory[playerIdInInventory.Value] = Tuple.Create(newPlayer, character.Item2);
+            characterInventory[playerIdInInventory.Value] = new Tuple<GameObject, int>(newPlayer, character.Item2);
             playerFormation[number] = playerIdInInventory.Value;
         }
         else
@@ -170,69 +166,72 @@ public class GameplayManager : MonoBehaviour
         }
     }
 
-    
+    private void checkCurrentPlayerDead_SpawnAnother()
+    {
+        //Check current player dead
+        GameObject player = characterInventory[playerFormation[currentPlayer.Value].Value].Item1;
+
+        CharacterScript characterScript = player.GetComponent<CharacterScript>();
+
+        if (!characterScript || characterScript.isCharacterActuallyDead())
+        {
+            // He's dead
+            Vector3 currentPosition = player.transform.position;
+            Vector3 currentLocalScale = player.transform.localScale;
+
+            int? newPlayer = null;
+            foreach (var item in playerFormation)
+            {
+                if (item.Key != currentPlayer.Value)
+                {
+                    GameObject newChar = item.Value.HasValue ? characterInventory[item.Value.Value].Item1 : null;
+                    if (newChar)
+                    {
+                        // If slot have character and character is already deployed more than 1 during game cycle
+                        // (appeared on screen more than 1 time), we check if character is dead or not before allow switch
+                        CharacterScript newCharScript = newChar.GetComponent<CharacterScript>();
+
+                        if (newCharScript && !newCharScript.isCharacterActuallyDead())
+                        {
+                            newPlayer = item.Key;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // If slot have character but character never deployed on screen (although still in formation)
+                        // we allow switch right away
+                        if (item.Value.HasValue)
+                        {
+                            newPlayer = item.Key;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (newPlayer.HasValue)
+            {
+                int? playerIdInInventory = null;
+                if (playerFormation.ContainsKey(newPlayer.Value))
+                {
+                    playerIdInInventory = playerFormation[newPlayer.Value];
+                }
+                spawnPlayerNumber(newPlayer.Value, currentPosition, currentLocalScale, playerIdInInventory);
+                characterSwitchTimer = characterSwitchCooldown;
+            }
+            else
+            {
+                Debug.Log("Everyone is dead");
+                currentPlayer = newPlayer;
+            }
+        }
+    }
 
     private void CharacterSwitchMechanics()
     {
         if (currentPlayer.HasValue && playerFormation.ContainsKey(currentPlayer.Value) && playerFormation[currentPlayer.Value] != null)
         {
-            //Check current player dead
-            GameObject player = characterInventory[playerFormation[currentPlayer.Value].Value].Item1;
-
-            CharacterScript characterScript = player.GetComponent<CharacterScript>();
-
-            if (!characterScript || characterScript.isCharacterActuallyDead())
-            {
-                // He's dead
-                Vector3 currentPosition = player.transform.position;
-                Vector3 currentLocalScale = player.transform.localScale;
-
-                int? newPlayer = null;
-                foreach (var item in playerFormation)
-                {
-                    if (item.Key != currentPlayer.Value)
-                    {
-                        GameObject newChar = item.Value.HasValue ? characterInventory[item.Value.Value].Item1 : null;
-                        if (newChar)
-                        {
-                            // If slot have character and character is already deployed more than 1 during game cycle
-                            // (appeared on screen more than 1 time), we check if character is dead or not before allow switch
-                            CharacterScript newCharScript = newChar.GetComponent<CharacterScript>();
-
-                            if (newCharScript && !newCharScript.isCharacterActuallyDead())
-                            {
-                                newPlayer = item.Key;
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            // If slot have character but character never deployed on screen (although still in formation)
-                            // we allow switch right away
-                            if (item.Value.HasValue)
-                            {
-                                newPlayer = item.Key;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (newPlayer.HasValue)
-                {
-                    int? playerIdInInventory = null;
-                    if (playerFormation.ContainsKey(newPlayer.Value))
-                    {
-                        playerIdInInventory = playerFormation[newPlayer.Value];
-                    }
-                    spawnPlayerNumber(newPlayer.Value, currentPosition, currentLocalScale, playerIdInInventory);
-                    characterSwitchTimer = characterSwitchCooldown;
-                }
-                else
-                {
-                    Debug.Log("Everyone is dead");
-                    currentPlayer = newPlayer;
-                }
-            }
+            checkCurrentPlayerDead_SpawnAnother();
         }
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -265,6 +264,19 @@ public class GameplayManager : MonoBehaviour
         // a spawn point destroy itself and it will automatically updates the game manager to remove itself => character not spawning on UI Scenes
         if (spawnPoint)
         {
+            if (!spawnedPlayer)
+            {
+                if (currentPlayer.HasValue)
+                {
+                    spawnPlayerNumber(currentPlayer.Value, spawnPoint.position, null, playerFormation[currentPlayer.Value]); 
+                }
+                // if team have no current player we spawn into slot 1 the first character in inventory
+                else
+                {
+                    spawnPlayerNumber(0, spawnPoint.position, null, 0);
+                }
+                spawnedPlayer = true;
+            }
             if (characterSwitchTimer <= 0)
             {
                 CharacterSwitchMechanics();

@@ -24,7 +24,9 @@ public class ObjectPooler : MonoBehaviour
     {
         if (GameSceneGlobal_ObjectPoolingEntity == null)
         {
-            GameSceneGlobal_ObjectPoolingEntity = GameObject.FindGameObjectWithTag("GlobalObjectPool").GetComponent<ObjectPooler>();
+            var gameObj = GameObject.FindGameObjectWithTag("GlobalObjectPool");
+            GameSceneGlobal_ObjectPoolingEntity = gameObj.GetComponent<ObjectPooler>();
+            DontDestroyOnLoad(gameObj);
         }
     }
 

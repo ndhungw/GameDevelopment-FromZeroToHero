@@ -4,9 +4,31 @@ using UnityEngine;
 
 public class SetSpawnPoint : MonoBehaviour
 {
+    private bool isWaitingForGameplayManagerToLoad = false;
+
+    // Start is called before the first frame update
     void Start()
     {
-        GameplayManager.GM.spawnPoint = gameObject.transform;
+        if (GameplayManager.GM)
+        {
+            GameplayManager.GM.spawnPoint = gameObject.transform;
+        }
+        else
+        {
+            isWaitingForGameplayManagerToLoad = true;
+        }
+    }
+
+    private void Update()
+    {
+        if (isWaitingForGameplayManagerToLoad)
+        {
+            if (GameplayManager.GM)
+            {
+                GameplayManager.GM.spawnPoint = gameObject.transform;
+                isWaitingForGameplayManagerToLoad = false;
+            }
+        }
     }
     
     // Start is called before the first frame update
