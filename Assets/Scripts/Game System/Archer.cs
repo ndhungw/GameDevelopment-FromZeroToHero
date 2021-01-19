@@ -24,6 +24,9 @@ namespace Assets.Scripts.Game_System
             critRate = 20.0f;
             critDamage = 1.5f;
             arrowRange = 6.0f;
+
+            CharacterName = "Archer";
+            WeaponName = "Composite Bow";
         }
     }
 }
