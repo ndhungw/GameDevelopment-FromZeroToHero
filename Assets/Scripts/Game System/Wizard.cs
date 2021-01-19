@@ -21,7 +21,6 @@ namespace Assets.Scripts.Game_System
             Cast01SkillDuration = 3.5f;
             Cast01SkillMultiplier = 1.05f;
             Cast01SkillCooldown = 7f;
-            CurrentHealth = MaxHealth;
         }
     }
 }
