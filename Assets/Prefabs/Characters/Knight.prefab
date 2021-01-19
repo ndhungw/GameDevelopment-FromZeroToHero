@@ -171,12 +171,13 @@ MonoBehaviour:
     m_Bits: 256
   feet: {fileID: 2149055213249385345}
   RaycastDistanceFromFeet: 2
+  avatarSprite: {fileID: 0}
   InvincibleTime: 2
   state: 0
   enemyLayer:
     serializedVersion: 2
     m_Bits: 1024
-  DamageRange: 1.5
+  DamageRange: 0.33
   AttackPoint: {fileID: 4802308373549542115}
 --- !u!1 &3702632520167206301
 GameObject:

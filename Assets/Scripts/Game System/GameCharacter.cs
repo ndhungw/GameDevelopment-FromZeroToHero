@@ -12,5 +12,6 @@ namespace Assets.Scripts.Game_System
         public float JumpSpeed { get; protected set; }
         public int MaxHealth { get; protected set; }
         public int BaseDamage { get; protected set; }
+        public int CurrentHealth { get; set; }
     }
 }
