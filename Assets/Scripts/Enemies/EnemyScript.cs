@@ -153,7 +153,7 @@ public class EnemyScript : MonoBehaviour
             }
 
             animator.SetTrigger("hit");
-            GameManager.GM?.CreatePlayerDamageText(Mathf.Abs(amount), gameObject);
+            GameplayManager.GM?.CreatePlayerDamageText(Mathf.Abs(amount), gameObject);
 
             isInvincible = true;
             invincibleTimer = InvincibleTime;

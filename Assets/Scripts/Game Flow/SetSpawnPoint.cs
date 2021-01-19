@@ -7,11 +7,11 @@ public class SetSpawnPoint : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameManager.GM.spawnPoint = gameObject.transform;
+        GameplayManager.GM.spawnPoint = gameObject.transform;
     }
 
     private void OnDestroy()
     {
-        GameManager.GM.spawnPoint = null;
+        GameplayManager.GM.spawnPoint = null;
     }
 }

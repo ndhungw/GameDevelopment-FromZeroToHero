@@ -21,7 +21,7 @@ public class KnightController : CharacterScript
     private new void Start()
     {
         base.Start();
-        Knight characterStats = (Knight) GameManager.GM.numbersForCharacters[GameManager.CHARACTERS.KNIGHT];
+        Knight characterStats = (Knight) GameplayManager.GM.numbersForCharacters[GameplayManager.CHARACTERS.KNIGHT];
         speed = characterStats.Speed;
         jumpSpeed = characterStats.JumpSpeed;
         MaxHealth = characterStats.MaxHealth;

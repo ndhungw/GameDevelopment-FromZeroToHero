@@ -24,7 +24,7 @@ public class ArcherBasicProjectile : MonoBehaviour
 
     private void Start()
     {
-        Archer characterStats = (Archer)GameManager.GM.numbersForCharacters[GameManager.CHARACTERS.ARCHER];
+        Archer characterStats = (Archer)GameplayManager.GM.numbersForCharacters[GameplayManager.CHARACTERS.ARCHER];
         baseDamage = characterStats.BaseDamage;
         critRate = characterStats.critRate;
         critDamage = characterStats.critDamage;

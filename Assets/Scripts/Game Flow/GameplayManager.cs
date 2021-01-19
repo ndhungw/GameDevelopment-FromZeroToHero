@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameplayManager : MonoBehaviour
 {
-    public static GameManager GM;
+    public static GameplayManager GM;
     [SerializeField]
     private GameObject playerDamageTextPrefab;
     [SerializeField]
@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     {
         if (GM == null)
         {
-            GM = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>(); 
+            GM = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameplayManager>(); 
         }
         
         characterInventory = new List<Tuple<GameObject, int>>();
@@ -141,7 +141,6 @@ public class GameManager : MonoBehaviour
         }
         var cinemachineCamera = GameObject.FindGameObjectWithTag("CinemachineCamera");
         if (cinemachineCamera) {
-           
             var cinemachineCameraScript = cinemachineCamera.GetComponent<CinemachineCameraScript>();
             if (cinemachineCameraScript)
             {

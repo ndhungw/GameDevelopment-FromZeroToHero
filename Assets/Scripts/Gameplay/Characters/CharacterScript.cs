@@ -112,7 +112,7 @@ public class CharacterScript : MonoBehaviour
             isHit = true;
             animator.SetTrigger("hit");
             changeAmount = calculateDamage(amount);
-            GameManager.GM?.CreateEnemyDamageText(Mathf.Abs(changeAmount), gameObject);
+            GameplayManager.GM?.CreateEnemyDamageText(Mathf.Abs(changeAmount), gameObject);
 
             isInvincible = true;
             invincibleTimer = InvincibleTime;

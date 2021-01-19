@@ -13,7 +13,7 @@ public class WizardScript : CharacterScript
     private new void Start()
     {
         base.Start();
-        Wizard characterStats = (Wizard)GameManager.GM.numbersForCharacters[GameManager.CHARACTERS.WIZARD];
+        Wizard characterStats = (Wizard)GameplayManager.GM.numbersForCharacters[GameplayManager.CHARACTERS.WIZARD];
         speed = characterStats.Speed;
         jumpSpeed = characterStats.JumpSpeed;
         MaxHealth = characterStats.MaxHealth;

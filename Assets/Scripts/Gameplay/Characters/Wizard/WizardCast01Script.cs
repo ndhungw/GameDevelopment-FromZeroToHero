@@ -15,7 +15,7 @@ public class WizardCast01Script : MonoBehaviour
 
     private void Start()
     {
-        Wizard characterStats = (Wizard)GameManager.GM.numbersForCharacters[GameManager.CHARACTERS.WIZARD];
+        Wizard characterStats = (Wizard)GameplayManager.GM.numbersForCharacters[GameplayManager.CHARACTERS.WIZARD];
         // 80% base damage
         skillDamage = Mathf.RoundToInt(characterStats.BaseDamage * characterStats.Cast01SkillMultiplier);
         skillDuration = characterStats.Cast01SkillDuration;

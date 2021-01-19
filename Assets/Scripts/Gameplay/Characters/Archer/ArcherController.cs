@@ -11,7 +11,7 @@ public class ArcherController : CharacterScript
     private new void Start()
     {
         base.Start();
-        Archer characterStats = (Archer) GameManager.GM.numbersForCharacters[GameManager.CHARACTERS.ARCHER];
+        Archer characterStats = (Archer) GameplayManager.GM.numbersForCharacters[GameplayManager.CHARACTERS.ARCHER];
         speed = characterStats.Speed;
         jumpSpeed = characterStats.JumpSpeed;
         MaxHealth = characterStats.MaxHealth;
