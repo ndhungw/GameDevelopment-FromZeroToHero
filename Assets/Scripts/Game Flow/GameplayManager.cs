@@ -138,9 +138,11 @@ public class GameplayManager : MonoBehaviour
         }
         var cinemachineCamera = GameObject.FindGameObjectWithTag("CinemachineCamera");
         if (cinemachineCamera) {
+            
             var cinemachineCameraScript = cinemachineCamera.GetComponent<CinemachineCameraScript>();
             if (cinemachineCameraScript)
             {
+                
                 cinemachineCameraScript.setFollowPlayer(player.transform);
             }
         }

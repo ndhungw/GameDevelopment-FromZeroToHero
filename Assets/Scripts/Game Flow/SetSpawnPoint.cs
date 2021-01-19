@@ -8,8 +8,6 @@ public class SetSpawnPoint : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-<<<<<<< Updated upstream
-=======
     {
         if (GameplayManager.GM)
         {
@@ -22,7 +20,6 @@ public class SetSpawnPoint : MonoBehaviour
     }
 
     private void Update()
->>>>>>> Stashed changes
     {
         if (isWaitingForGameplayManagerToLoad)
         {
