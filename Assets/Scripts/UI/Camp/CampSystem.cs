@@ -14,13 +14,4 @@ public class CampSystem : MonoBehaviour
             CampUI.SetActive(false);
         }
     }
-
-    public void displayCampUI()
-    {
-        if (!CampUI.activeInHierarchy)
-        {
-            CampUI.SetActive(true);
-        }
-        //fetch data from game info manager here
-    }
 }

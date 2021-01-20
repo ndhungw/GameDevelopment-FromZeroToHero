@@ -100,7 +100,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -149,6 +149,5 @@ MonoBehaviour:
     m_Bits: 512
   PickUpRadius: 2.82
   TreasureValue: 100
-  WinPanel: {fileID: 0}
   ClosedChest: {fileID: -4963943773778265686, guid: 840ce2f9581a45242ad8d8bb2f385f58, type: 3}
   ChestOpen: {fileID: 8041193895001566143, guid: 840ce2f9581a45242ad8d8bb2f385f58, type: 3}
