@@ -17,7 +17,9 @@ public class ArcherController : CharacterScript
         MaxHealth = characterStats.MaxHealth;
         delayBetweenAttacks = characterStats.timeBetweenShots;
         shootArrowForce = characterStats.launchArrowForce;
-        currentHealth = characterStats.CurrentHealth;  
+        currentHealth = characterStats.CurrentHealth;
+        HealthBar.instance.SetValue(currentHealth, MaxHealth);
+        HealthBar.instance.SetAvatar(avatarSprite);
     }
 
     protected override void SetCurrentHealthToGameInfoManager()
