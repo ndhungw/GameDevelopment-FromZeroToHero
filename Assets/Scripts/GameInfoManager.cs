@@ -4,13 +4,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameInfoManager
-{ 
+{
+    public enum GAME_CHARACTER
+    {
+        KNIGHT,
+        WIZARD,
+        ARCHER,
+    }
 
     public static Knight knight = new Knight();
 
     public static Archer archer = new Archer();
 
     public static Wizard wizard = new Wizard();
+
+    public static Dictionary<GAME_CHARACTER, GameCharacter> characterDictionary { get; protected set; }
 
     public static int Food = 0;
 
@@ -20,6 +28,15 @@ public class GameInfoManager
 
     //private int money = 1000;
     //private int food = 0;
+
+    static GameInfoManager(){
+        characterDictionary = new Dictionary<GAME_CHARACTER, GameCharacter>
+        {
+            { GAME_CHARACTER.KNIGHT, knight },
+            { GAME_CHARACTER.WIZARD, wizard },
+            { GAME_CHARACTER.ARCHER, archer }
+        };
+    }
 
 
 

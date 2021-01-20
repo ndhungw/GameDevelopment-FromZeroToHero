@@ -9,7 +9,6 @@ TagManager:
   - GlobalObjectPool
   - ManaSprite
   - HealthSprite
-  - LevelController
   layers:
   - Default
   - TransparentFX
@@ -27,7 +26,7 @@ TagManager:
   - playerprojectiles
   - background
   - Confiner
-  - item
+  - NPC
   - 
   - 
   - 
