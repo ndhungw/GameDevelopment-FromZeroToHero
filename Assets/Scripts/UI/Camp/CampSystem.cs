@@ -4,16 +4,22 @@ using UnityEngine;
 
 public class CampSystem : MonoBehaviour
 {
+    public GameObject CampUI;
+    public GameObject CampObj;
+
     public void Awake()
     {
-        gameObject.SetActive(false);
+        if (CampUI)
+        {
+            CampUI.SetActive(false);
+        }
     }
 
     public void displayCampUI()
     {
-        if (!gameObject.activeInHierarchy)
+        if (!CampUI.activeInHierarchy)
         {
-            gameObject.SetActive(true);
+            CampUI.SetActive(true);
         }
         //fetch data from game info manager here
     }
