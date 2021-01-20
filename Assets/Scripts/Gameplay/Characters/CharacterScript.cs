@@ -265,7 +265,6 @@ public class CharacterScript : MonoBehaviour
             // Check if there is slope
             if (hit && Mathf.Abs(hit.normal.x) > 0.1f)
             {
-                Debug.Log("aaaaaa");
                 // We freeze position X of the rigidbody constraints and put x velocity to 0
                 // to stop the normal physics on slope, making object only movable from us setting velocity
                 rigidbody2d.constraints = RigidbodyConstraints2D.FreezePositionX;
