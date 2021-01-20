@@ -6,7 +6,6 @@ public class ArcherController : CharacterScript
     private float delayBetweenAttacks;
     private float shootArrowForce;
     private float delayTimer = 0.0f;
-    private bool canAttack = true;
 
     private new void OnEnable()
     {

@@ -35,6 +35,7 @@ public class CharacterScript : MonoBehaviour
     protected float? previousTime = null;
 
     bool canJump = true;
+    protected bool canAttack = true;
 
     public enum State
     {
@@ -324,5 +325,10 @@ public class CharacterScript : MonoBehaviour
     public int GetMaxHealth()
     {
         return MaxHealth;
+    }
+
+    public bool isAbleToClickAttack()
+    {
+        return canAttack;
     }
 }

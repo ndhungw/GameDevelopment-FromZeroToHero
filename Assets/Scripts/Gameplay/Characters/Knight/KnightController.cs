@@ -13,7 +13,6 @@ public class KnightController : CharacterScript
     private float delayBetweenAttacks = 1.0f;
     private float defenseAgainstAttacks;
     private float delayTimer = 0.0f;
-    private bool canAttack = true;
 
     //Attack related
     bool isAttacking = false;
