@@ -216,7 +216,7 @@ public class CharacterScript : MonoBehaviour
             }
             else if (Input.GetKey(KeyCode.D))
             {
-                transform.localScale = new Vector2(1, 1);
+                transform.localScale = new Vector3(1, 1);
                 // Onground - our rule
                 if (hit && state != State.JUMPING && state != State.FALLING)
                 {

@@ -9,7 +9,6 @@ public class HospitalMenu : MonoBehaviour
     public Image archer;
     public Image wizard;
 
-    private
     // Start is called before the first frame update
     void Start()
     {
