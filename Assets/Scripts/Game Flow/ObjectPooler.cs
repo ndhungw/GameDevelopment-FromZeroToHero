@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ObjectPooler : MonoBehaviour
 {
@@ -28,25 +29,43 @@ public class ObjectPooler : MonoBehaviour
             GameSceneGlobal_ObjectPoolingEntity = gameObj.GetComponent<ObjectPooler>();
             DontDestroyOnLoad(gameObj);
         }
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
-        foreach(var pool in pools)
+        foreach (var pool in pools)
         {
             Queue<GameObject> objectQueue = new Queue<GameObject>();
 
-            for(int i = 0; i < pool.poolSize; i++)
+            poolDictionary.Add(pool.poolName, objectQueue);
+        }
+        SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+        SceneManager.sceneUnloaded += SceneManager_sceneUnloaded;
+    }
+
+    private void SceneManager_sceneUnloaded(Scene arg0)
+    {
+        foreach (var pool in pools)
+        {
+            var objectQueue = poolDictionary[pool.poolName];
+
+            for (int i = 0; i < pool.poolSize; i++)
+            {
+                objectQueue.Clear();
+            }
+        }
+    }
+
+    private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        foreach (var pool in pools)
+        {
+            var objectQueue = poolDictionary[pool.poolName];
+
+            for (int i = 0; i < pool.poolSize; i++)
             {
                 GameObject tempObj = Instantiate(pool.prefab);
                 tempObj.SetActive(false);
                 objectQueue.Enqueue(tempObj);
             }
-
-            poolDictionary.Add(pool.poolName, objectQueue);
         }
     }
 

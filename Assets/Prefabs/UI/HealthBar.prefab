@@ -194,6 +194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Mask: {fileID: 8770945617073599958}
   Avatar: {fileID: 8770945616143706463}
+  healthText: {fileID: 8770945616909367597}
 --- !u!1 &8770945616764445484
 GameObject:
   m_ObjectHideFlags: 0
