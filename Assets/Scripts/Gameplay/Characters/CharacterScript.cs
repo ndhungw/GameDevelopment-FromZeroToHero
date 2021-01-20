@@ -60,6 +60,8 @@ public class CharacterScript : MonoBehaviour
         collider = GetComponent<Collider2D>();
         state = State.IDLE;
         staggerTime = Mathf.Max(InvincibleTime / 4, 0.5f);
+        HealthBar.instance.SetValue(currentHealth, MaxHealth);
+        HealthBar.instance.SetAvatar(avatarSprite);
     }
 
     // Called before start and repeated on every reenabling attempt
