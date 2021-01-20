@@ -13,7 +13,6 @@ public class KnightController : CharacterScript
     private float delayBetweenAttacks = 1.0f;
     private float defenseAgainstAttacks;
     private float delayTimer = 0.0f;
-    private bool canAttack = true;
 
     //Attack related
     bool isAttacking = false;
@@ -31,6 +30,29 @@ public class KnightController : CharacterScript
         currentHealth = characterStats.CurrentHealth;
         HealthBar.instance.SetValue(currentHealth, MaxHealth);
         HealthBar.instance.SetAvatar(avatarSprite);
+
+        float currentTime = Time.time;
+        if (previousTime.HasValue)
+        {
+            float elapsedTimeSinceSwitch = Mathf.Abs(currentTime - previousTime.Value);
+            // remove the elapsedTime from cooldown
+            delayTimer = Mathf.Max(0, delayTimer - elapsedTimeSinceSwitch);
+        }
+    }
+
+    protected new void OnDisable()
+    {
+        base.OnDisable();
+        previousTime = Time.time;
+        if (!canAttack)
+        {
+            canAttack = true;
+        }
+        if (isAttacking)
+        {
+            isAttacking = false;
+        }
+        isIFraming = false;
     }
 
     protected override void SetCurrentHealthToGameInfoManager()

@@ -423,7 +423,7 @@ public class GameplayManager : MonoBehaviour
             }
 
             // otherwise carry on
-            if (script && !script.isCharacterActuallyDead())
+            if (script && !script.isCharacterActuallyDead() && script.isAbleToClickAttack())
             {
                 script.startIFraming();
 

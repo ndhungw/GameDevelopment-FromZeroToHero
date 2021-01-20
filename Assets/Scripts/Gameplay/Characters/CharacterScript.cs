@@ -32,7 +32,10 @@ public class CharacterScript : MonoBehaviour
     bool isStaggered = false;
     private float staggerTimer;
 
+    protected float? previousTime = null;
+
     bool canJump = true;
+    protected bool canAttack = true;
 
     public enum State
     {
@@ -69,6 +72,11 @@ public class CharacterScript : MonoBehaviour
     {
         isInvincible = true;
         invincibleTimer = 0.5f;
+    }
+
+    protected void OnDisable()
+    {
+        previousTime = Time.time;
     }
 
     private void checkVelocityState()
@@ -317,5 +325,10 @@ public class CharacterScript : MonoBehaviour
     public int GetMaxHealth()
     {
         return MaxHealth;
+    }
+
+    public bool isAbleToClickAttack()
+    {
+        return canAttack;
     }
 }

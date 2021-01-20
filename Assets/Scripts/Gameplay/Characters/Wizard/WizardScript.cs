@@ -8,7 +8,6 @@ public class WizardScript : CharacterScript
 
     private float delayBetweenAttacks;
     private float delayTimer = 0.0f;
-    private bool canAttack = true;
 
     private new void OnEnable()
     {
@@ -21,6 +20,25 @@ public class WizardScript : CharacterScript
         currentHealth = characterStats.CurrentHealth;
         HealthBar.instance.SetValue(currentHealth, MaxHealth);
         HealthBar.instance.SetAvatar(avatarSprite);
+
+        float currentTime = Time.time;
+        if (previousTime.HasValue)
+        {
+            float elapsedTimeSinceSwitch = Mathf.Abs(currentTime - previousTime.Value);
+            // remove the elapsedTime from cooldown
+            delayTimer = Mathf.Max(0, delayTimer - elapsedTimeSinceSwitch);
+        }
+    }
+
+    protected new void OnDisable()
+    {
+        base.OnDisable();
+        previousTime = Time.time;
+        if (!canAttack)
+        {
+            canAttack = true;
+        }
+        isIFraming = false;
     }
 
     private void Update()
