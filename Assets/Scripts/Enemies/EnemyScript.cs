@@ -60,6 +60,8 @@ public class EnemyScript : MonoBehaviour
         rigidbody2d = GetComponent<Rigidbody2D>();
 
         currentHealth = MaxHealth;
+
+        LevelManager.LM.ChangeMonsterCount(1);
     }
 
     // Update is called once per frame
@@ -170,6 +172,7 @@ public class EnemyScript : MonoBehaviour
         if (currentHealth <= 0)
         {
             animator.SetTrigger("dead");
+            LevelManager.LM.ChangeMonstersKilled(1);
             //Destroy(gameObject);
         }
     }
