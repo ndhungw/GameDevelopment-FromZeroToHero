@@ -231,7 +231,7 @@ MonoBehaviour:
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 512
-  DetectRadius: 12.04
+  DetectRadius: 25
   AttackRange: 7.31
   DamageRange: 1.77
   AttackRate: 0.5

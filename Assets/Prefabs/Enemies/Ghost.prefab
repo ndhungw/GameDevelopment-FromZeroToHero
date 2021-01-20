@@ -177,6 +177,7 @@ MonoBehaviour:
   StaggerTime: 0.5
   MaxHealth: 100
   ATKKnockBack: 3.75
+  InvincibleTime: 0.5
   ProjectilePrefab: {fileID: 686436477052284779, guid: 63da8f795744d27418c7bef61a63ff67, type: 3}
 --- !u!1 &6558158984796872620
 GameObject:
