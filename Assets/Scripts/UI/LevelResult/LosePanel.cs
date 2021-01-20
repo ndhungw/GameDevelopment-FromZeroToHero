@@ -16,6 +16,7 @@ public class LosePanel : MonoBehaviour
 
     public void ReturnToVillage()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene("Village");
     }
 

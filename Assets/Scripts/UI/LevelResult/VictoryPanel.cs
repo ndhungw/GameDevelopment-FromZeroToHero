@@ -44,6 +44,7 @@ public class VictoryPanel : MonoBehaviour
 
     public void ReturnToVillage()
     {
+        Time.timeScale = 1;
         GameInfoManager.ChangeMoney(LevelManager.LM.CalculateIncome());
         SceneManager.LoadScene("Village");
     }

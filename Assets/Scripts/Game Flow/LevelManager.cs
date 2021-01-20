@@ -64,7 +64,7 @@ public class LevelManager : MonoBehaviour
         int heroCount = GetHeroesRemain();
         if (heroCount  == 0)
         {
-            
+            ShowLosePanel();
         }
     }
 
@@ -149,14 +149,15 @@ public class LevelManager : MonoBehaviour
 
     public void ShowVictoryPanel()
     {
-        Debug.Log(VictoryPanel.instance.Panel);
         VictoryPanel.instance.Panel.SetActive(true);
         LosePanel.instance.Panel.SetActive(false);
+        Time.timeScale = 0;
     }
 
     public void ShowLosePanel()
     {
-        //VictoryPanel.instance.Panel.SetActive(false);
-        //LosePanel.instance.Panel.SetActive(true);
+        VictoryPanel.instance.Panel.SetActive(false);
+        LosePanel.instance.Panel.SetActive(true);
+        Time.timeScale = 0;
     }
 }
