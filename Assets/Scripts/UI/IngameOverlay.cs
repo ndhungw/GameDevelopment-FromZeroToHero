@@ -19,5 +19,9 @@ public class IngameOverlay : MonoBehaviour
         {
             gameObject.SetActive(true);
         }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 }
