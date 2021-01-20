@@ -8,7 +8,7 @@ public class TreasureChest : MonoBehaviour
     public float PickUpRadius = 5.0f;
     public int TreasureValue = 100;
 
-    public GameObject WinPanel;
+    //public GameObject WinPanel;
 
     public Sprite ClosedChest;
 
@@ -44,9 +44,7 @@ public class TreasureChest : MonoBehaviour
     {
         spriteRenderer.sprite = ChestOpen;
         LevelManager.LM.TreasureFound = 100;
-        WinPanel.SetActive(true);
-
-
+        LevelManager.LM.ShowVictoryPanel();
     }
 
     private void OnDrawGizmosSelected()

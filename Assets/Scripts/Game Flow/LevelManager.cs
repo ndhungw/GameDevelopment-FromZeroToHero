@@ -61,7 +61,11 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        int heroCount = GetHeroesRemain();
+        if (heroCount  == 0)
+        {
+            
+        }
     }
 
     public int GetHeroesRemain()
@@ -141,5 +145,18 @@ public class LevelManager : MonoBehaviour
         
 
         return sum;
+    }
+
+    public void ShowVictoryPanel()
+    {
+        Debug.Log(VictoryPanel.instance.Panel);
+        VictoryPanel.instance.Panel.SetActive(true);
+        LosePanel.instance.Panel.SetActive(false);
+    }
+
+    public void ShowLosePanel()
+    {
+        //VictoryPanel.instance.Panel.SetActive(false);
+        //LosePanel.instance.Panel.SetActive(true);
     }
 }
