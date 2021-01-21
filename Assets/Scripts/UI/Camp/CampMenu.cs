@@ -2,11 +2,14 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CampMenu : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject CampUI;
+
+    public Text FoodText;
 
     private void SetHealthEffect(int perecentages)
     {
@@ -66,6 +69,7 @@ public class CampMenu : MonoBehaviour
     void onEnable()
     {
         Time.timeScale = 0;
+        FoodText.text = GameInfoManager.Food.ToString();
     }
 
     public void UseFood(int amount)

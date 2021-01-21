@@ -42,9 +42,13 @@ public class TreasureChest : MonoBehaviour
 
     private void OpenChest()
     {
-        spriteRenderer.sprite = ChestOpen;
-        LevelManager.LM.TreasureFound = 100;
-        LevelManager.LM.ShowVictoryPanel();
+        if (LevelManager.LM.CheckWinCondition())
+        {
+            spriteRenderer.sprite = ChestOpen;
+            LevelManager.LM.TreasureFound = 100;
+            LevelManager.LM.ShowVictoryPanel();
+        }
+        
     }
 
     private void OnDrawGizmosSelected()
