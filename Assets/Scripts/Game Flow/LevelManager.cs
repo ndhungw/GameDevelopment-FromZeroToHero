@@ -79,7 +79,7 @@ public class LevelManager : MonoBehaviour
         {
             heroCount++;
         }
-        if (GameInfoManager.archer.CurrentHealth > 0)
+        if (GameInfoManager.wizard.CurrentHealth > 0)
         {
             heroCount++;
         }

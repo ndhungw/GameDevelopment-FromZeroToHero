@@ -310,6 +310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CampUI: {fileID: 5832723154837651158}
+  FoodText: {fileID: 1466105210523699324}
 --- !u!1 &268140034993270586
 GameObject:
   m_ObjectHideFlags: 0
