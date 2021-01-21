@@ -15,7 +15,7 @@ public class LevelResultOverlay : MonoBehaviour
 
     private void SceneManager_sceneUnLoaded(Scene arg0)
     {
-        //gameObject.SetActive(true);
+        gameObject.SetActive(false);
         VictoryPanel.instance.Panel.SetActive(false);
         LosePanel.instance.Panel.SetActive(false);
     }

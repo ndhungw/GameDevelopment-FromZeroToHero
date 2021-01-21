@@ -1517,6 +1517,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7600248580969903762, guid: a4edd3f3ac2ce9e4f8390638c27dcacc, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7600248580969903765, guid: a4edd3f3ac2ce9e4f8390638c27dcacc, type: 3}
       propertyPath: m_Name
       value: LevelResult Overlay
