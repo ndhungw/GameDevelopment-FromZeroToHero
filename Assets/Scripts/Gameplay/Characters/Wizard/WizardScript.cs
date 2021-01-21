@@ -28,6 +28,11 @@ public class WizardScript : CharacterScript
             // remove the elapsedTime from cooldown
             delayTimer = Mathf.Max(0, delayTimer - elapsedTimeSinceSwitch);
         }
+
+        if (currentHealth <= 0)
+        {
+            isActuallyDead = true;
+        }
     }
 
     protected new void OnDisable()

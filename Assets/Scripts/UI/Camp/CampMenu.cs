@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Game_System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,9 +10,57 @@ public class CampMenu : MonoBehaviour
 
     private void SetHealthEffect(int perecentages)
     {
-        GameInfoManager.knight.SetCurrentHealth(GameInfoManager.knight.CurrentHealth * perecentages / 100);
-        GameInfoManager.archer.SetCurrentHealth(GameInfoManager.archer.CurrentHealth * perecentages / 100);
-        GameInfoManager.wizard.SetCurrentHealth(GameInfoManager.wizard.CurrentHealth * perecentages / 100);
+        List<Tuple<GameObject, Type>> characters = GameplayManager.GM.GetCurrentCharacterScripts();
+
+        foreach (var e in characters)
+        {
+            if (e.Item1 != null)
+            {
+                CharacterScript script = e.Item1.GetComponent<CharacterScript>();
+                if (script)
+                {
+                    int currentHealth = 0;
+
+                    if (e.Item2==typeof(Knight))
+                    {
+                        currentHealth = GameInfoManager.knight.CurrentHealth;
+                    }
+                    else if (e.Item2 == typeof(Archer))
+                    {
+                        currentHealth = GameInfoManager.archer.CurrentHealth;
+                    }
+                    else if (e.Item2 == typeof(Wizard))
+                    {
+                        currentHealth = GameInfoManager.wizard.CurrentHealth;
+                    }
+
+                    int value = currentHealth * (100 - perecentages) / 100;
+                    Debug.Log("change health: " + value);
+                    script.ChangeHealth(-value);
+
+                }
+            }
+            else
+            {
+                if (e.Item2 == typeof(Knight))
+                {
+                    int newHealth = GameInfoManager.knight.CurrentHealth * perecentages / 100;
+
+                    GameInfoManager.knight.SetCurrentHealth(newHealth);
+                }
+                else if (e.Item2 == typeof(Archer))
+                {
+                    int newHealth = GameInfoManager.archer.CurrentHealth * perecentages / 100;
+                    GameInfoManager.archer.SetCurrentHealth(newHealth);
+                }
+                else if (e.Item2 == typeof(Wizard))
+                {
+                    int newHealth = GameInfoManager.wizard.CurrentHealth * perecentages / 100;
+                    GameInfoManager.wizard.SetCurrentHealth(newHealth);
+                }
+
+            }
+        }   
     }
 
     void onEnable()
@@ -26,7 +75,7 @@ public class CampMenu : MonoBehaviour
             return;
         }
 
-        switch(amount)
+        switch (amount)
         {
             case 0:
                 SetHealthEffect(60);
@@ -47,5 +96,5 @@ public class CampMenu : MonoBehaviour
         Debug.Log("hello");
         CampUI.SetActive(false);
     }
-    
+
 }

@@ -151,13 +151,23 @@ public class LevelManager : MonoBehaviour
     {
         VictoryPanel.instance.Panel.SetActive(true);
         LosePanel.instance.Panel.SetActive(false);
-        Time.timeScale = 0;
+
+        //Time.timeScale = 0;
+    }
+
+    public bool CheckWinCondition()
+    {
+        if (MonstersKilled == MonsterCount)
+        {
+            return true;
+        }
+        return false;
     }
 
     public void ShowLosePanel()
     {
         VictoryPanel.instance.Panel.SetActive(false);
         LosePanel.instance.Panel.SetActive(true);
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
     }
 }
