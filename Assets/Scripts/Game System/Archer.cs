@@ -13,6 +13,8 @@ namespace Assets.Scripts.Game_System
         public float critRate { get; private set; }
         public float critDamage { get; private set; }
         public float arrowRange { get; private set; }
+
+
         public Archer()
         {
             Speed = 21;

@@ -37,6 +37,14 @@ public class CharacterScript : MonoBehaviour
     bool canJump = true;
     protected bool canAttack = true;
 
+    public AudioClip AttackSound;
+
+    public AudioClip HitSound;
+
+    public AudioClip DieSound;
+
+    protected AudioSource audioSource;
+
     public enum State
     {
         IDLE = 0,
@@ -66,6 +74,7 @@ public class CharacterScript : MonoBehaviour
         HealthBar.instance.SetValue(currentHealth, MaxHealth);
         HealthBar.instance.SetAvatar(avatarSprite);
 
+        audioSource = GetComponent<AudioSource>();
         
     }
 
@@ -333,5 +342,20 @@ public class CharacterScript : MonoBehaviour
     public bool isAbleToClickAttack()
     {
         return canAttack;
+    }
+
+    public void PlayAttackSound()
+    {
+        audioSource.PlayOneShot(AttackSound);
+    }
+
+    public void PlayDeadSound()
+    {
+        audioSource.PlayOneShot(DieSound);
+    }
+
+    public void PlayHitSound()
+    {
+        audioSource.PlayOneShot(HitSound);
     }
 }
