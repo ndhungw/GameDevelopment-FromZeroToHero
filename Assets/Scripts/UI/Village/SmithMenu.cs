@@ -15,7 +15,15 @@ public class SmithMenu : MonoBehaviour
     public Text wizradCost;
     public Text wizardLevel;
 
+    public AudioClip OpenSound;
 
+    private AudioSource audioSource;
+
+    void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+
+    }
     private int calculateUpgradeCost(GameCharacter character)
     {
         return 1000 + 1000 * (character.WeaponLevel - 1) / 50;
@@ -30,6 +38,13 @@ public class SmithMenu : MonoBehaviour
 
         wizradCost.text = calculateUpgradeCost(GameInfoManager.wizard).ToString();
         wizardLevel.text = (GameInfoManager.wizard.WeaponLevel).ToString();
+
+        
+    }
+
+    public void PlayOpenSound() {
+        audioSource = GetComponent<AudioSource>();
+        audioSource.PlayOneShot(OpenSound);
     }
 
     void Update()
