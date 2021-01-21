@@ -65,6 +65,8 @@ public class CharacterScript : MonoBehaviour
         staggerTime = Mathf.Max(InvincibleTime / 4, 0.5f);
         HealthBar.instance.SetValue(currentHealth, MaxHealth);
         HealthBar.instance.SetAvatar(avatarSprite);
+
+        
     }
 
     // Called before start and repeated on every reenabling attempt
@@ -72,6 +74,7 @@ public class CharacterScript : MonoBehaviour
     {
         isInvincible = true;
         invincibleTimer = 0.5f;
+
     }
 
     protected void OnDisable()

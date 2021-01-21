@@ -10,9 +10,17 @@ public class LevelResultOverlay : MonoBehaviour
         gameObject.SetActive(false);
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+        SceneManager.sceneUnloaded += SceneManager_sceneUnLoaded;
     }
 
-    
+    private void SceneManager_sceneUnLoaded(Scene arg0)
+    {
+        //gameObject.SetActive(true);
+        VictoryPanel.instance.Panel.SetActive(false);
+        LosePanel.instance.Panel.SetActive(false);
+    }
+
+
 
     private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
     {

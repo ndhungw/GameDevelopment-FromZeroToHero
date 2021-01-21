@@ -16,7 +16,7 @@ namespace Assets.Scripts.Game_System
             JumpSpeed = 40;
             MaxHealth = 100;
             CurrentHealth = MaxHealth;
-            BaseDamage = 50;
+            BaseDamage = 50 + 100;
             timeBetweenSwings = 1.0f;
             defenseAgainstAttack = 0.2f;
 

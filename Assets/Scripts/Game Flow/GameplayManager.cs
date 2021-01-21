@@ -35,6 +35,11 @@ public class GameplayManager : MonoBehaviour
     // this prefab list order is also the same order for the type dictionary)
     private List<Tuple<GameObject, int>> characterInventory;
     // int here is the position of the character in formation, gameobject is the corresponding character id
+    //0: knight; 1:wizard; 2:archer
+    /// <summary>
+    /// key: 0 - knight; 1 - wizard; 2 - archer
+    /// item: position of hero in characterInventory
+    /// </summary>
     private Dictionary<int, int?> playerFormation;
 
     private void Awake()
@@ -92,6 +97,7 @@ public class GameplayManager : MonoBehaviour
         {
             characterInventory[i] = new Tuple<GameObject, int>(null, characterInventory[i].Item2);
         }
+        currentPlayer = 0;
     }
 
     private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
@@ -121,8 +127,7 @@ public class GameplayManager : MonoBehaviour
             playerFormation[number] = playerIdInInventory.Value;
         }
         else
-        {
-            
+        {   
             if (!playerFormation.ContainsKey(number) || !playerFormation[number].HasValue)
             {
                 return false;
@@ -179,58 +184,96 @@ public class GameplayManager : MonoBehaviour
         //Check current player dead
         GameObject player = characterInventory[playerFormation[currentPlayer.Value].Value].Item1;
 
-        CharacterScript characterScript = player.GetComponent<CharacterScript>();
-
-        if (!characterScript || characterScript.isCharacterActuallyDead())
+        if (player)
         {
-            // He's dead
-            Vector3 currentPosition = player.transform.position;
-            Vector3 currentLocalScale = player.transform.localScale;
+            CharacterScript characterScript = player.GetComponent<CharacterScript>();
 
-            int? newPlayer = null;
-            foreach (var item in playerFormation)
+            if (!characterScript || characterScript.isCharacterActuallyDead())
             {
-                if (item.Key != currentPlayer.Value)
-                {
-                    GameObject newChar = item.Value.HasValue ? characterInventory[item.Value.Value].Item1 : null;
-                    if (newChar)
-                    {
-                        // If slot have character and character is already deployed more than 1 during game cycle
-                        // (appeared on screen more than 1 time), we check if character is dead or not before allow switch
-                        CharacterScript newCharScript = newChar.GetComponent<CharacterScript>();
+                // He's dead
+                Vector3 currentPosition = player.transform.position;
+                Vector3 currentLocalScale = player.transform.localScale;
 
-                        if (newCharScript && !newCharScript.isCharacterActuallyDead())
-                        {
-                            newPlayer = item.Key;
-                            break;
-                        }
-                    }
-                    else
+                int? newPlayer = null;
+                foreach (var item in playerFormation)
+                {
+                    if (item.Key != currentPlayer.Value)
                     {
-                        // If slot have character but character never deployed on screen (although still in formation)
-                        // we allow switch right away
-                        if (item.Value.HasValue)
+                        GameObject newChar = item.Value.HasValue ? characterInventory[item.Value.Value].Item1 : null;
+                        if (newChar)
                         {
-                            newPlayer = item.Key;
-                            break;
+                            // If slot have character and character is already deployed more than 1 during game cycle
+                            // (appeared on screen more than 1 time), we check if character is dead or not before allow switch
+                            CharacterScript newCharScript = newChar.GetComponent<CharacterScript>();
+
+                            if (newCharScript && !newCharScript.isCharacterActuallyDead())
+                            {
+                                newPlayer = item.Key;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            // If slot have character but character never deployed on screen (although still in formation)
+                            // we allow switch right away
+                            var character = characterInventory[item.Key];
+                            var characterType = characterInfos[character.Item2];
+                            if (characterType == null)
+                            {
+                                characterInventory.Remove(characterInventory[item.Key]);
+                                playerFormation[item.Key] = null;
+                                return;
+                            }
+                            if (characterType == typeof(Knight))
+                            {
+                                if (GameInfoManager.knight.CurrentHealth <= 0)
+                                {
+                                    return;
+                                }
+                            }
+                            else if (characterType == typeof(Archer))
+                            {
+                                if (GameInfoManager.archer.CurrentHealth <= 0)
+                                {
+                                    return;
+                                }
+                            }
+                            else if (characterType == typeof(Wizard))
+                            {
+                                if (GameInfoManager.wizard.CurrentHealth <= 0)
+                                {
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                characterInventory.Remove(characterInventory[item.Key]);
+                                playerFormation[item.Key] = null;
+                                return;
+                            }
+                            if (item.Value.HasValue)
+                            {
+                                newPlayer = item.Key;
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            if (newPlayer.HasValue)
-            {
-                int? playerIdInInventory = null;
-                if (playerFormation.ContainsKey(newPlayer.Value))
+                if (newPlayer.HasValue)
                 {
-                    playerIdInInventory = playerFormation[newPlayer.Value];
+                    int? playerIdInInventory = null;
+                    if (playerFormation.ContainsKey(newPlayer.Value))
+                    {
+                        playerIdInInventory = playerFormation[newPlayer.Value];
+                    }
+                    spawnPlayerNumber(newPlayer.Value, currentPosition, currentLocalScale, playerIdInInventory);
+                    characterSwitchTimer = characterSwitchCooldown;
                 }
-                spawnPlayerNumber(newPlayer.Value, currentPosition, currentLocalScale, playerIdInInventory);
-                characterSwitchTimer = characterSwitchCooldown;
-            }
-            else
-            {
-                Debug.Log("Everyone is dead");
-                currentPlayer = newPlayer;
+                else
+                {
+                    Debug.Log("Everyone is dead");
+                    currentPlayer = newPlayer;
+                }
             }
         }
     }
@@ -425,6 +468,46 @@ public class GameplayManager : MonoBehaviour
             // otherwise carry on
             if (script && !script.isCharacterActuallyDead() && script.isAbleToClickAttack())
             {
+                if (playerFormation.ContainsKey(number) && playerFormation[number].HasValue && !characterInventory[playerFormation[number].Value].Item1)
+                {
+                    if (!playerIdInInventory.HasValue) return;
+                    var character = characterInventory[number];
+                    var characterType = characterInfos[character.Item2];
+                    if (characterType == null)
+                    {
+                        characterInventory.Remove(characterInventory[playerIdInInventory.Value]);
+                        playerFormation[number] = null;
+                        return;
+                    }
+                    if (characterType == typeof(Knight))
+                    {
+                        if (GameInfoManager.knight.CurrentHealth <= 0)
+                        {
+                            return;
+                        }
+                    }
+                    else if (characterType == typeof(Archer))
+                    {
+                        if (GameInfoManager.archer.CurrentHealth <= 0)
+                        {
+                            return;
+                        }
+                    }
+                    else if (characterType == typeof(Wizard))
+                    {
+                        if (GameInfoManager.wizard.CurrentHealth <= 0)
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        characterInventory.Remove(characterInventory[playerIdInInventory.Value]);
+                        playerFormation[number] = null;
+                        return;
+                    }
+                }
+
                 script.startIFraming();
 
                 //Get current position despawn and spawn new character
@@ -454,5 +537,21 @@ public class GameplayManager : MonoBehaviour
     {
         GameObject enemyDamage = Instantiate(enemyDamageTextPrefab, new Vector3(player.GetComponent<Rigidbody2D>().position.x, player.GetComponent<Collider2D>().bounds.max.y, 0), new Quaternion());
         enemyDamage.transform.GetChild(0).GetComponent<TextMeshPro>().SetText(damage.ToString());
+    }
+
+    public List<Tuple<GameObject, Type>> GetCurrentCharacterScripts()
+    {
+        List<Tuple<GameObject, Type>> result = new List<Tuple<GameObject, Type>>();
+
+        foreach(var e in characterInventory)
+        {
+            GameObject gameObject = e.Item1;
+            Type type = characterInfos[e.Item2];
+
+            result.Add(new Tuple<GameObject, Type>(gameObject, type));
+        }
+
+        return result;
+        
     }
 }
