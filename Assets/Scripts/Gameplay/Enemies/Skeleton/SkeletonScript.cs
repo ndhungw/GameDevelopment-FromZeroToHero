@@ -8,7 +8,7 @@ public class SkeletonScript : EnemyScript
     
     public override void ExecuteAttack()
     {
-        var circleCastResults = Physics2D.CircleCastAll(AttackPoint.position, DamageRange, Vector2.up, Mathf.Infinity, PlayerLayer);
+        var circleCastResults = Physics2D.CircleCastAll(AttackPoint.position, DamageRange, Vector2.up, DamageRange, PlayerLayer);
 
         //if player was attacked
         if (circleCastResults != null)
