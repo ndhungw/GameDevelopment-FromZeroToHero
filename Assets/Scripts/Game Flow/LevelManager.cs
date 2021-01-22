@@ -66,6 +66,11 @@ public class LevelManager : MonoBehaviour
         {
             ShowLosePanel();
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            ShowLosePanel();
+        }
     }
 
     public int GetHeroesRemain()
@@ -152,7 +157,7 @@ public class LevelManager : MonoBehaviour
         VictoryPanel.instance.Panel.SetActive(true);
         LosePanel.instance.Panel.SetActive(false);
 
-        //Time.timeScale = 0;
+        Time.timeScale = 0;
     }
 
     public bool CheckWinCondition()
@@ -168,6 +173,6 @@ public class LevelManager : MonoBehaviour
     {
         VictoryPanel.instance.Panel.SetActive(false);
         LosePanel.instance.Panel.SetActive(true);
-        //Time.timeScale = 0;
+        Time.timeScale = 0;
     }
 }

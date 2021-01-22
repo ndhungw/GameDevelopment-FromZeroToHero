@@ -79,7 +79,7 @@ public class CampMenu : MonoBehaviour
 
     public void UseFood(int amount)
     {
-        if (amount < GameInfoManager.Food)
+        if (amount > GameInfoManager.Food)
         {
             return;
         }
