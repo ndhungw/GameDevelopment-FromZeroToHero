@@ -33,7 +33,7 @@ public class WizardCast01Script : MonoBehaviour
 
     public void PulsateDamageCircle()
     {
-        var circleCastResults = Physics2D.CircleCastAll(AttackPoint.position, DamageRange, Vector2.up, Mathf.Infinity, enemyLayer);
+        var circleCastResults = Physics2D.CircleCastAll(AttackPoint.position, DamageRange, Vector2.up, 0.0f, enemyLayer);
 
         if (circleCastResults != null)
         {

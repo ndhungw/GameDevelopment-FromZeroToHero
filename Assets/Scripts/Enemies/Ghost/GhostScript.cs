@@ -13,7 +13,7 @@ public class GhostScript : EnemyScript
         nextAttackTime = Time.time + 1f / AttackRate;
         
 
-        var circleCastResults = Physics2D.CircleCastAll(AttackPoint.position, AttackRange, Vector2.up, DamageRange, PlayerLayer);
+        var circleCastResults = Physics2D.CircleCastAll(AttackPoint.position, AttackRange, Vector2.up, 0.0f, PlayerLayer);
 
         //if player was attacked
         if (circleCastResults != null && circleCastResults.Length > 0)

@@ -93,7 +93,7 @@ public class KnightController : CharacterScript
         // If knight is attacking, check for damage range around the attack point for possible collision with enemies
         if (isAttacking)
         {
-            var circleCastResults = Physics2D.CircleCastAll(AttackPoint.position, DamageRange, Vector2.up, DamageRange, enemyLayer);
+            var circleCastResults = Physics2D.CircleCastAll(AttackPoint.position, DamageRange, Vector2.up, 0.0f, enemyLayer);
 
             if (circleCastResults != null)
             {

@@ -118,12 +118,12 @@ public class GravityScript : MonoBehaviour
 
     public bool CheckIsGrounded()
     {
-        RaycastHit2D hit = Physics2D.Raycast(feet.position, Vector2.down, RaycastDistanceFromFeet, ground);
+        RaycastHit2D hit = Physics2D.CircleCast(feet.position, RaycastDistanceFromFeet / 2, Vector2.down, 0.0f, ground);
         return hit && collider.IsTouchingLayers(ground);
     }
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.DrawLine(feet.position, new Vector3(feet.position.x, feet.position.y - RaycastDistanceFromFeet, 0));
+        Gizmos.DrawWireSphere(feet.position, RaycastDistanceFromFeet / 2);
     }
 }
