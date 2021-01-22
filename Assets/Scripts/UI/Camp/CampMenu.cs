@@ -72,9 +72,14 @@ public class CampMenu : MonoBehaviour
         FoodText.text = GameInfoManager.Food.ToString();
     }
 
+    void Update()
+    {
+        FoodText.text = GameInfoManager.Food.ToString();
+    }
+
     public void UseFood(int amount)
     {
-        if (amount < GameInfoManager.Food)
+        if (amount > GameInfoManager.Food)
         {
             return;
         }
